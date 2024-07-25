@@ -1,5 +1,5 @@
 
 export interface Identifiable {
-    
-    id: string;
+
+    id: number;
 }
