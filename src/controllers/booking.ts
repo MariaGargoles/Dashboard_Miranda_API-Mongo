@@ -1,6 +1,6 @@
 import Express from "express";
 import { BookingService } from "../services/booking";
-import { ControllersGeneric } from "../utils/controllers";
+import { ControllersGeneric } from "../utils/controller";
 
 const BookingHandler = new BookingService();
 export const BookingController = Express.Router();

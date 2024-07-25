@@ -1,7 +1,6 @@
+import { Identifiable } from "../interfaces/id";
 
-
-export interface Booking {
-    id: string;
+export interface Booking extends Identifiable {
     Name: string;
     OrderDate: string;
     CheckIn: string;
@@ -10,4 +9,4 @@ export interface Booking {
     RoomType: string;
     RoomNumber: string;
     Status: string;
-  }
+}
