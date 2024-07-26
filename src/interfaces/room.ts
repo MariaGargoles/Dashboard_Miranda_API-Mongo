@@ -1,7 +1,9 @@
-export interface Room {
+import { Identifiable } from "./id";
+
+
+export interface Room extends Identifiable {
     photo: string;
-    number: string;
-    id: string;
+    number: number;
     BedType: string;
     Amenities: string [];
     Rate: number;

@@ -1,15 +1,18 @@
+import express, { Application } from 'express';
+import bodyParser from 'body-parser';
 
+import { BookingController } from './src/controllers/booking';
+import { ContactController } from './src/controllers/contactmessages';
 
-export const app = () => {
-const express = require("express");
-const app = express();
-const port = 3000;
+const app: Application = express();
+const PORT = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
+app.use(bodyParser.json());
+app.use('/rooms', roomRoutes);
+app.use('/users', userRoutes);
+app.use('/booking', BookingController);
+app.use('/contact', ContactController);
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
-}
