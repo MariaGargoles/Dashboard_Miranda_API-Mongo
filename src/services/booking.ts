@@ -15,7 +15,8 @@ export class BookingService {
 
  
     public getBookingById(id: string): Booking | undefined {
-        return this.bookings.find(booking => booking.id === id);
+        const numericId = parseInt(id, 10);
+        return this.bookings.find(booking => booking.id === numericId);
     }
 
   
@@ -26,7 +27,8 @@ export class BookingService {
 
   
     public updateBooking(id: string, updatedBooking: Partial<Booking>): Booking | undefined {
-        const bookingIndex = this.bookings.findIndex(booking => booking.id === id);
+        const numericId = parseInt(id, 10);
+        const bookingIndex = this.bookings.findIndex(booking => booking.id === numericId);
 
         if (bookingIndex !== -1) {
             this.bookings[bookingIndex] = {
@@ -39,9 +41,10 @@ export class BookingService {
         return undefined;
     }
 
-    // Eliminar una reserva
+    
     public deleteBooking(id: string): boolean {
-        const bookingIndex = this.bookings.findIndex(booking => booking.id === id);
+        const numericId = parseInt(id, 10);
+        const bookingIndex = this.bookings.findIndex(booking => booking.id === numericId);
 
         if (bookingIndex !== -1) {
             this.bookings.splice(bookingIndex, 1);
