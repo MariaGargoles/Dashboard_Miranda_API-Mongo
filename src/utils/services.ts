@@ -20,7 +20,8 @@ export class ServicesGeneric<T extends Identifiable> implements ServiceControlle
     }
 
     async getId(id: string): Promise<T | null> {
-        const item = this.data.find(item => item.id === id);
+        const numericId = parseInt(id, 10);
+        const item = this.data.find(item => item.id === numericId);
         return item || null;
     }
 
@@ -30,7 +31,8 @@ export class ServicesGeneric<T extends Identifiable> implements ServiceControlle
     }
 
     async deleteID(id: string): Promise<T[]> {
-        this.data = this.data.filter(item => item.id !== id);
+        const numericId = parseInt(id, 10);
+        this.data = this.data.filter(item => item.id !== numericId);
         return this.data; 
     }
 

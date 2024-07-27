@@ -1,56 +1,37 @@
-import { Booking } from '../interfaces/booking';
-import data from "../data/Booking.json"; 
+import { ServiceController } from "../interfaces/service";
+import { Booking } from "../interfaces/booking";
 
-export class BookingService {
-    private bookings: Booking[];
+export class BookingService implements ServiceController<Booking> {
+    private bookings: Booking[] = [];
 
-    constructor() {
-        this.bookings = data;
-    }
-
-   
-    public getAllBookings(): Booking[] {
+    async getAll(): Promise<Booking[]> {
         return this.bookings;
     }
 
- 
-    public getBookingById(id: string): Booking | undefined {
+    async getId(id: string): Promise<Booking | null> {
         const numericId = parseInt(id, 10);
-        return this.bookings.find(booking => booking.id === numericId);
+        return this.bookings.find(booking => booking.id === numericId) || null;
     }
 
-  
-    public createBooking(newBooking: Booking): Booking {
-        this.bookings.push(newBooking);
-        return newBooking;
+    async post(item: Booking): Promise<Booking[]> {
+        this.bookings.push(item);
+        return this.bookings;
     }
 
-  
-    public updateBooking(id: string, updatedBooking: Partial<Booking>): Booking | undefined {
+    async deleteID(id: string): Promise<Booking[]> {
         const numericId = parseInt(id, 10);
-        const bookingIndex = this.bookings.findIndex(booking => booking.id === numericId);
+        this.bookings = this.bookings.filter(booking => booking.id !== numericId);
+        return this.bookings;
+    }
 
-        if (bookingIndex !== -1) {
-            this.bookings[bookingIndex] = {
-                ...this.bookings[bookingIndex],
-                ...updatedBooking
-            };
-            return this.bookings[bookingIndex];
+    async put(update: Booking): Promise<Booking[] | null> {
+        const existingBooking = this.bookings.find(booking => booking.id === update.id);
+        if (existingBooking) {
+            this.bookings = this.bookings.map(booking =>
+                booking.id === update.id ? update : booking
+            );
+            return this.bookings;
         }
-
-        return undefined;
-    }
-
-    
-    public deleteBooking(id: string): boolean {
-        const numericId = parseInt(id, 10);
-        const bookingIndex = this.bookings.findIndex(booking => booking.id === numericId);
-
-        if (bookingIndex !== -1) {
-            this.bookings.splice(bookingIndex, 1);
-            return true;
-        }
-
-        return false;
+        return null;
     }
 }

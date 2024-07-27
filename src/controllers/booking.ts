@@ -1,37 +1,17 @@
-import { Router, Request, Response, NextFunction } from "express";
-import { allBookings, bookingById } from "../services/bookingServices";
+import Express from "express";
 import { BookingService } from "../services/booking";
+import { ControllersGeneric } from "../utils/controller"; 
+import { Booking } from "../interfaces/booking";
 
+const bookingHandler = new BookingService();
+export const bookingRouter = Express.Router();
 
+const { getAll, getId, post, deleteID, put } = ControllersGeneric<Booking>(bookingHandler);
 
-export default BookinRouter = () =< {
-const router = Router();
-router.get("/", (_req: Request, res: Response, _next: NextFunction) => {
-    const bookings = allBookings();
-    return res.json({ bookings });
-});
+bookingRouter.get('/', getAll);
+bookingRouter.get('/:id', getId);
+bookingRouter.post('/', post);
+bookingRouter.delete('/:id', deleteID);
+bookingRouter.patch('/:id', put);
 
-router.post("/", (_req: Request, _res: Response, _next: NextFunction) => {
-  
-});
-
-router.get("/:id", (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const id = req.params.id;
-        const booking = bookingById(id);
-
-        return res.json(booking);
-    } catch (e) {
-        next(e);
-        return;
-    }
-});
-
-router.patch("/:id", (_req: Request, _res: Response, _next: NextFunction) => {
-   
-});
-
-router.delete("/:id", (_req: Request, _res: Response, _next: NextFunction) => {})
-
-
-}
+export default bookingRouter;
