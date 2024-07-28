@@ -1,14 +1,10 @@
 import Express from "express";
-import { ContactService } from "../services/contactmessages";
-import { ControllersGeneric } from "../controllers/generic"; 
+import { ContactMessagesService } from "../services/contactmessages";
 
-const ContactHandler = new ContactService();
 export const ContactController = Express.Router();
 
-const { getAll, getId, post, deleteID, put } = ControllersGeneric(ContactHandler);
-
-ContactController.get('/', getAll);
-ContactController.get('/:id', getId);
-ContactController.post('/', post);
-ContactController.delete('/:id', deleteID);
-ContactController.put('/:id', put);
+ContactController.get('/', ContactMessagesService.getAll);
+ContactController.get('/:id', ContactMessagesService.getId);
+ContactController.post('/', ContactMessagesService.post);
+ContactController.delete('/:id', ContactMessagesService.deleteID);
+ContactController.put('/:id', ContactMessagesService.put);

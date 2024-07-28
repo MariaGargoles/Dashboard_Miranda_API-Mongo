@@ -1,51 +1,58 @@
-
 import { ContactMessage } from '../interfaces/messages';
-import { ServiceController } from '../interfaces/service';
 import fs from 'fs';
 import path from 'path';
+import { Request, Response } from 'express';
 
-export class ContactMessagesService implements ServiceController<ContactMessage> {
-    private contactMessages: ContactMessage[];
+export class ContactMessagesService {
+    private static contactMessages: ContactMessage[];
 
-    constructor() {
+    static {
         const filePath = path.join(__dirname, '../data/contactMessages.json');
         const jsonData = fs.readFileSync(filePath, 'utf-8');
         this.contactMessages = JSON.parse(jsonData);
     }
 
-    async getAll(): Promise<ContactMessage[]> {
-        return this.contactMessages;
+    static getAll(req: Request, res: Response): void {
+        res.json(this.contactMessages);
     }
 
-    async getId(id: string): Promise<ContactMessage | null> {
-        const numericId = parseInt(id, 10);
-        return this.contactMessages.find(message => message.id === numericId) || null;
+    static getId(req: Request, res: Response): void {
+        const numericId = parseInt(req.params.id, 10);
+        const message = this.contactMessages.find(message => message.id === numericId) || null;
+        if (message) {
+            res.json(message);
+        } else {
+            res.status(404).send('Not Found');
+        }
     }
 
-    async post(item: ContactMessage): Promise<ContactMessage[]> {
+    static post(req: Request, res: Response): void {
+        const item: ContactMessage = req.body;
         this.contactMessages.push(item);
         this.saveToFile();
-        return this.contactMessages;
+        res.status(201).json(this.contactMessages);
     }
 
-    async deleteID(id: string): Promise<ContactMessage[]> {
-        const numericId = parseInt(id, 10);
+    static deleteID(req: Request, res: Response): void {
+        const numericId = parseInt(req.params.id, 10);
         this.contactMessages = this.contactMessages.filter(message => message.id !== numericId);
         this.saveToFile();
-        return this.contactMessages;
+        res.json(this.contactMessages);
     }
 
-    async put(update: ContactMessage): Promise<ContactMessage[] | null> {
+    static put(req: Request, res: Response): void {
+        const update: ContactMessage = req.body;
         const index = this.contactMessages.findIndex(message => message.id === update.id);
         if (index !== -1) {
             this.contactMessages[index] = update;
             this.saveToFile();
-            return this.contactMessages;
+            res.json(this.contactMessages);
+        } else {
+            res.status(404).send('Not Found');
         }
-        return null;
     }
 
-    private saveToFile(): void {
+    private static saveToFile(): void {
         const filePath = path.join(__dirname, '../data/contactMessages.json');
         fs.writeFileSync(filePath, JSON.stringify(this.contactMessages, null, 2), 'utf-8');
     }

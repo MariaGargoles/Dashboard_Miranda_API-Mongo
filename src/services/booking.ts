@@ -1,37 +1,43 @@
-import { ServiceController } from "../interfaces/service";
 import { Booking } from "../interfaces/booking";
+import { Request, Response } from 'express';
 
-export class BookingService implements ServiceController<Booking> {
-    private bookings: Booking[] = [];
+export class BookingService {
+    private static bookings: Booking[] = [];
 
-    async getAll(): Promise<Booking[]> {
-        return this.bookings;
+    static async getAll(req: Request, res: Response): Promise<void> {
+        res.json(this.bookings);
     }
 
-    async getId(id: string): Promise<Booking | null> {
-        const numericId = parseInt(id, 10);
-        return this.bookings.find(booking => booking.id === numericId) || null;
-    }
-
-    async post(item: Booking): Promise<Booking[]> {
-        this.bookings.push(item);
-        return this.bookings;
-    }
-
-    async deleteID(id: string): Promise<Booking[]> {
-        const numericId = parseInt(id, 10);
-        this.bookings = this.bookings.filter(booking => booking.id !== numericId);
-        return this.bookings;
-    }
-
-    async put(update: Booking): Promise<Booking[] | null> {
-        const existingBooking = this.bookings.find(booking => booking.id === update.id);
-        if (existingBooking) {
-            this.bookings = this.bookings.map(booking =>
-                booking.id === update.id ? update : booking
-            );
-            return this.bookings;
+    static async getId(req: Request, res: Response): Promise<void> {
+        const numericId = parseInt(req.params.id, 10);
+        const booking = this.bookings.find(booking => booking.id === numericId) || null;
+        if (booking) {
+            res.json(booking);
+        } else {
+            res.status(404).send('Not Found');
         }
-        return null;
+    }
+
+    static async post(req: Request, res: Response): Promise<void> {
+        const item: Booking = req.body;
+        this.bookings.push(item);
+        res.status(201).json(this.bookings);
+    }
+
+    static async deleteID(req: Request, res: Response): Promise<void> {
+        const numericId = parseInt(req.params.id, 10);
+        this.bookings = this.bookings.filter(booking => booking.id !== numericId);
+        res.json(this.bookings);
+    }
+
+    static async put(req: Request, res: Response): Promise<void> {
+        const update: Booking = req.body;
+        const index = this.bookings.findIndex(booking => booking.id === update.id);
+        if (index !== -1) {
+            this.bookings[index] = update;
+            res.json(this.bookings);
+        } else {
+            res.status(404).send('Not Found');
+        }
     }
 }
