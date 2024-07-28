@@ -1,5 +1,8 @@
-export interface User {
-    id: string;
+import { Identifiable } from "./id";
+
+
+export interface User extends Identifiable {
+    
     name: string;
     foto: string;
     startDate: string;
