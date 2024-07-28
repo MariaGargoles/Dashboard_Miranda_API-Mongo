@@ -1,15 +1,10 @@
 import { Room } from '../interfaces/room';
 import fs from 'fs';
 import path from 'path';
+import roomsData from '../data/Rooms.json';
 
 export class RoomService {
-    private static rooms: Room[];
-
-    static {
-        const filePath = path.join(__dirname, '../data/rooms.json');
-        const jsonData = fs.readFileSync(filePath, 'utf-8');
-        this.rooms = JSON.parse(jsonData);
-    }
+    private static rooms: Room[] = roomsData;
 
     static async getAll(): Promise<Room[]> {
         return this.rooms;
@@ -44,7 +39,7 @@ export class RoomService {
     }
 
     private static saveToFile(): void {
-        const filePath = path.join(__dirname, '../data/rooms.json');
+        const filePath = path.join(__dirname, '../data/Rooms.json');
         fs.writeFileSync(filePath, JSON.stringify(this.rooms, null, 2), 'utf-8');
     }
 }

@@ -1,24 +1,17 @@
 import { User } from '../interfaces/user';
 import fs from 'fs';
 import path from 'path';
+import usersData from '../data/users.json';
 
 export class UserService {
-    private static users: User[];
-
-    static {
-        const filePath = path.join(__dirname, '../data/users.json');
-        const jsonData = fs.readFileSync(filePath, 'utf-8');
-        this.users = JSON.parse(jsonData);
-    }
+    private static users: User[] = usersData;
 
     static async getAll(): Promise<User[]> {
         return this.users;
     }
 
-    static async getId(id: string): Promise<User | null> {
-        const numericId = parseInt(id, 10);
-        const user = this.users.find(user => user.id === numericId) || null;
-        return user;
+    static async getId(id: number): Promise<User | null> {
+        return this.users.find(user => user.id === id) || null;
     }
 
     static async post(item: User): Promise<User[]> {
@@ -27,9 +20,8 @@ export class UserService {
         return this.users;
     }
 
-    static async deleteID(id: string): Promise<User[]> {
-        const numericId = parseInt(id, 10);
-        this.users = this.users.filter(user => user.id !== numericId);
+    static async deleteID(id: number): Promise<User[]> {
+        this.users = this.users.filter(user => user.id !== id);
         this.saveToFile();
         return this.users;
     }

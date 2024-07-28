@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const room_1 = require("../services/room");
+const controller_1 = require("../utils/controller");
+const auth_1 = require("../middleware/auth");
+const roomRouter = (0, express_1.Router)();
+const { getAll, getId, post, deleteID, put } = (0, controller_1.ControllersGeneric)(room_1.RoomService);
+roomRouter.use(auth_1.authTokenMiddleware);
+roomRouter.get('/', getAll);
+roomRouter.get('/:id', getId);
+roomRouter.post('/', post);
+roomRouter.delete('/:id', deleteID);
+roomRouter.patch('/:id', put);
+exports.default = roomRouter;

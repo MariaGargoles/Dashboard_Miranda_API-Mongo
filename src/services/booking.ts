@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 export class BookingService {
     private static bookings: Booking[] = [];
 
-    static async getAll(req: Request, res: Response): Promise<void> {
+    static async getAll(_req: Request, res: Response): Promise<void> {
         res.json(this.bookings);
     }
 

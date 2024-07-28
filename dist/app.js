@@ -1,0 +1,21 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.App = void 0;
+const express_1 = __importDefault(require("express"));
+const body_parser_1 = __importDefault(require("body-parser"));
+const auth_1 = require("./controllers/auth");
+const rooms_1 = __importDefault(require("./controllers/rooms"));
+const users_1 = __importDefault(require("./controllers/users"));
+const booking_1 = __importDefault(require("./controllers/booking"));
+const contactmessages_1 = require("./controllers/contactmessages");
+const app = (0, express_1.default)();
+exports.App = app;
+app.use(body_parser_1.default.json());
+app.post('/login', auth_1.login);
+app.use('/rooms', rooms_1.default);
+app.use('/users', users_1.default);
+app.use('/booking', booking_1.default);
+app.use('/contact', contactmessages_1.ContactController);

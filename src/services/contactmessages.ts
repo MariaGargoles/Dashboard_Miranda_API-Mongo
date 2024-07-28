@@ -12,7 +12,7 @@ export class ContactMessagesService {
         this.contactMessages = JSON.parse(jsonData);
     }
 
-    static getAll(req: Request, res: Response): void {
+    static getAll(_req: Request, res: Response): void {
         res.json(this.contactMessages);
     }
 
