@@ -1,7 +1,10 @@
-import { Schema, model } from "mongoose";
-import { Booking } from "../interfaces/booking"; 
 
-export const BookingSchema = new Schema<Booking>({
+import { Schema, model} from "mongoose";
+import { Identifiable as IdentifiableInterface} from "../interfaces/id";
+import { Booking as BookingInterface } from "../interfaces/booking";
+
+ export const BookingSchema = new Schema<BookingInterface & IdentifiableInterface>({
+    id: { type: Number, required: true, unique: true },
     Name: { type: String, required: true },
     OrderDate: { type: Date, required: true },
     CheckIn: { type: Date, required: true },
@@ -9,7 +12,9 @@ export const BookingSchema = new Schema<Booking>({
     SpecialRequest: { type: String, required: true },
     RoomType: { type: String, required: true },
     RoomNumber: { type: Number, required: true },
-    Status: { type: String,enum: ["In Progress", "Check Out", "In Progress" ] , required: true }
+    Status: { type: String, enum: ["Check In", "In Progress", "Check Out"], required: true }
 });
 
-export const BookingModel = model<Booking>('Booking', BookingSchema);
+export const BookingModel = model<BookingInterface & IdentifiableInterface>('Booking', BookingSchema);
+
+
