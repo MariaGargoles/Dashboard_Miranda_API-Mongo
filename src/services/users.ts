@@ -4,7 +4,7 @@ import path from 'path';
 import usersData from '../data/users.json';
 
 export class UserService {
-    private static users: User[] = usersData;
+    private static users: User[] = this.convertUsers(usersData);
 
     static async getAll(): Promise<User[]> {
         return this.users;
@@ -39,5 +39,12 @@ export class UserService {
     private static saveToFile(): void {
         const filePath = path.join(__dirname, '../data/users.json');
         fs.writeFileSync(filePath, JSON.stringify(this.users, null, 2), 'utf-8');
+    }
+
+    private static convertUsers(usersData: any[]): User[] {
+        return usersData.map(user => ({
+            ...user,
+            startDate: new Date(user.startDate) 
+        }));
     }
 }

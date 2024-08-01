@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import connectDB from "../mongodb"; 
+import { connectDB } from "../mongodb"; 
 import { RoomModel } from "../models/room";
 import { UserModel }from "../models/user";  
 import { BookingModel } from "../models/booking";  
