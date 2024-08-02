@@ -16,6 +16,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
+const users_json_1 = __importDefault(require("../data/users.json"));
 class UserService {
     static getAll() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -25,8 +26,7 @@ class UserService {
     static getId(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const numericId = parseInt(id, 10);
-            const user = this.users.find(user => user.id === numericId) || null;
-            return user;
+            return this.users.find(user => user.id === numericId) || null;
         });
     }
     static post(item) {
@@ -59,11 +59,10 @@ class UserService {
         const filePath = path_1.default.join(__dirname, '../data/users.json');
         fs_1.default.writeFileSync(filePath, JSON.stringify(this.users, null, 2), 'utf-8');
     }
+    static convertUsers(usersData) {
+        return usersData.map(user => (Object.assign(Object.assign({}, user), { startDate: new Date(user.startDate) })));
+    }
 }
 exports.UserService = UserService;
 _a = UserService;
-(() => {
-    const filePath = path_1.default.join(__dirname, '../data/users.json');
-    const jsonData = fs_1.default.readFileSync(filePath, 'utf-8');
-    _a.users = JSON.parse(jsonData);
-})();
+UserService.users = _a.convertUsers(users_json_1.default);

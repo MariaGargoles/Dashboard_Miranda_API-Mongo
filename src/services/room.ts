@@ -4,7 +4,7 @@ import path from 'path';
 import roomsData from '../data/Rooms.json';
 
 export class RoomService {
-    private static rooms: Room[] = roomsData;
+    private static rooms: Room[] = roomsData as Room[];
 
     static async getAll(): Promise<Room[]> {
         return this.rooms;

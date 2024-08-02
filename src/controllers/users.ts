@@ -1,12 +1,10 @@
 import { Router } from 'express';
-import { UserService } from "../services/users";
+import { UserService } from '../services/users';
 import { ControllersGeneric } from '../utils/controller';
 import { User } from '../interfaces/user';
 import { authTokenMiddleware } from '../middleware/auth';
 
-
 const userRouter = Router();
-
 const { getAll, getId, post, deleteID, put } = ControllersGeneric<User>(UserService);
 
 userRouter.use(authTokenMiddleware);

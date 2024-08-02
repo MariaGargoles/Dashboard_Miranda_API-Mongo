@@ -5,9 +5,10 @@ export interface User extends Identifiable {
     
     name: string;
     foto: string;
-    startDate: string;
+    startDate: Date;
     description: string;
     email: string;
     contact: string;
-    status: string;
+    status: "ACTIVE" | "INACTIVE";
+    password: string;
   }
