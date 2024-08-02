@@ -8,53 +8,76 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BookingService = void 0;
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
 class BookingService {
-    static getAll(_req, res) {
+    constructor() {
+        this.bookings = [];
+        this.nextId = 1;
+    }
+    static put(_arg0, _put) {
+        throw new Error("Method not implemented.");
+    }
+    static deleteID(_arg0, _deleteID) {
+        throw new Error("Method not implemented.");
+    }
+    static post(_arg0, _post) {
+        throw new Error("Method not implemented.");
+    }
+    static getId(_arg0, _getId) {
+        throw new Error("Method not implemented.");
+    }
+    static getAll(_arg0, _getAll) {
+        throw new Error("Method not implemented.");
+    }
+    getAll() {
         return __awaiter(this, void 0, void 0, function* () {
-            res.json(this.bookings);
+            return this.bookings;
         });
     }
-    static getId(req, res) {
+    getId(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const numericId = parseInt(req.params.id, 10);
-            const booking = this.bookings.find(booking => booking.id === numericId) || null;
-            if (booking) {
-                res.json(booking);
-            }
-            else {
-                res.status(404).send('Not Found');
-            }
+            const booking = this.bookings.find(booking => booking.id === id) || null;
+            return booking;
         });
     }
-    static post(req, res) {
+    post(item) {
         return __awaiter(this, void 0, void 0, function* () {
-            const item = req.body;
+            if (!item.Name || !item.OrderDate || !item.CheckIn || !item.CheckOut || !item.RoomType || !item.roomId) {
+                throw new Error('Bad Request: Missing required fields');
+            }
+            item.id = this.nextId++;
             this.bookings.push(item);
-            res.status(201).json(this.bookings);
+            this.saveToFile();
+            return item;
         });
     }
-    static deleteID(req, res) {
+    deleteID(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const numericId = parseInt(req.params.id, 10);
-            this.bookings = this.bookings.filter(booking => booking.id !== numericId);
-            res.json(this.bookings);
+            this.bookings = this.bookings.filter(booking => booking.id !== id);
+            this.saveToFile();
+            return this.bookings;
         });
     }
-    static put(req, res) {
+    put(update) {
         return __awaiter(this, void 0, void 0, function* () {
-            const update = req.body;
             const index = this.bookings.findIndex(booking => booking.id === update.id);
             if (index !== -1) {
                 this.bookings[index] = update;
-                res.json(this.bookings);
+                this.saveToFile();
+                return this.bookings[index];
             }
-            else {
-                res.status(404).send('Not Found');
-            }
+            return null;
         });
+    }
+    saveToFile() {
+        const filePath = path_1.default.join(__dirname, '../data/bookings.json');
+        fs_1.default.writeFileSync(filePath, JSON.stringify(this.bookings, null, 2), 'utf-8');
     }
 }
 exports.BookingService = BookingService;
-BookingService.bookings = [];

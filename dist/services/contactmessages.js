@@ -45,15 +45,19 @@ class ContactMessagesService {
             res.status(404).send('Not Found');
         }
     }
+    static addContactMessage(contactMessage) {
+        this.contactMessages.push(contactMessage);
+        this.saveToFile();
+    }
     static saveToFile() {
-        const filePath = path_1.default.join(__dirname, '../data/contactMessages.json');
-        fs_1.default.writeFileSync(filePath, JSON.stringify(this.contactMessages, null, 2), 'utf-8');
+        fs_1.default.writeFileSync(this.filePath, JSON.stringify(this.contactMessages, null, 2), 'utf-8');
     }
 }
 exports.ContactMessagesService = ContactMessagesService;
 _a = ContactMessagesService;
+ContactMessagesService.contactMessages = [];
+ContactMessagesService.filePath = path_1.default.join(__dirname, '../data/contactMessages.json');
 (() => {
-    const filePath = path_1.default.join(__dirname, '../data/contactMessages.json');
-    const jsonData = fs_1.default.readFileSync(filePath, 'utf-8');
+    const jsonData = fs_1.default.readFileSync(_a.filePath, 'utf-8');
     _a.contactMessages = JSON.parse(jsonData);
 })();

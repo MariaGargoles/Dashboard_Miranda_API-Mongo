@@ -11,8 +11,9 @@
     "serverless-http": "^3.2.0"
   },
   "scripts": {
-    "build": "tsc && copyfiles -u 1 src/data/*.json dist/data",
-    "start": "node dist/server.js"
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "deploy": "npm run build && serverless deploy"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

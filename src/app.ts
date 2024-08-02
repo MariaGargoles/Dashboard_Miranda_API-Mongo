@@ -5,8 +5,9 @@ import roomRouter from './controllers/rooms';
 import userRouter from './controllers/users';
 import bookingRouter from './controllers/booking';
 import { ContactRouter } from './controllers/contactmessages'; 
+import { connectDB } from './mongodb';
 
-import connectDB from "./mongodb"; 
+
 
 connectDB();
 

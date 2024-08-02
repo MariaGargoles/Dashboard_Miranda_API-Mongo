@@ -12,8 +12,8 @@ import { BookingService } from './services/booking';
 import bcrypt from 'bcrypt';
 
 const NUM_BOOKINGS = 30;
-const NUM_CONTACTS = 20;
-const NUM_ROOMS = 40;
+const NUM_CONTACTS = 10;
+const NUM_ROOMS = 20;
 const NUM_USERS = 25;
 
 connectDB().catch(error => console.log(error));
@@ -82,7 +82,7 @@ const run = async () => {
             description: faker.lorem.sentence(),
             startDate: faker.date.past(),
             status: faker.helpers.arrayElement(["ACTIVE", "INACTIVE"]),
-            password: ''
+            password:  faker.internet.password(),
         };
 
         const newUser = await UserService.post(userData); 
