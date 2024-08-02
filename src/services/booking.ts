@@ -1,43 +1,49 @@
 import { Booking } from "../interfaces/booking";
-import { Request, Response } from 'express';
+import fs from 'fs';
+import path from 'path';
 
 export class BookingService {
-    private static bookings: Booking[] = [];
+    private bookings: Booking[] = [];
+    private nextId = 1;
 
-    static async getAll(_req: Request, res: Response): Promise<void> {
-        res.json(this.bookings);
+    async getAll(): Promise<Booking[]> {
+        return this.bookings;
     }
 
-    static async getId(req: Request, res: Response): Promise<void> {
-        const numericId = parseInt(req.params.id, 10);
-        const booking = this.bookings.find(booking => booking.id === numericId) || null;
-        if (booking) {
-            res.json(booking);
-        } else {
-            res.status(404).send('Not Found');
+    async getId(id: number): Promise<Booking | null> {
+        const booking = this.bookings.find(booking => booking.id === id) || null;
+        return booking;
+    }
+
+    async post(item: Booking): Promise<Booking> {
+        if (!item.Name || !item.OrderDate || !item.CheckIn || !item.CheckOut || !item.RoomType || !item.roomId) {
+            throw new Error('Bad Request: Missing required fields');
         }
-    }
 
-    static async post(req: Request, res: Response): Promise<void> {
-        const item: Booking = req.body;
+        item.id = this.nextId++;
         this.bookings.push(item);
-        res.status(201).json(this.bookings);
+        this.saveToFile();
+        return item;
     }
 
-    static async deleteID(req: Request, res: Response): Promise<void> {
-        const numericId = parseInt(req.params.id, 10);
-        this.bookings = this.bookings.filter(booking => booking.id !== numericId);
-        res.json(this.bookings);
+    async deleteID(id: number): Promise<Booking[]> {
+        this.bookings = this.bookings.filter(booking => booking.id !== id);
+        this.saveToFile();
+        return this.bookings;
     }
 
-    static async put(req: Request, res: Response): Promise<void> {
-        const update: Booking = req.body;
+    async put(update: Booking): Promise<Booking | null> {
         const index = this.bookings.findIndex(booking => booking.id === update.id);
         if (index !== -1) {
             this.bookings[index] = update;
-            res.json(this.bookings);
-        } else {
-            res.status(404).send('Not Found');
+            this.saveToFile();
+            return this.bookings[index];
         }
+        return null;
+    }
+
+    private saveToFile(): void {
+        const filePath = path.join(__dirname, '../data/bookings.json');
+        fs.writeFileSync(filePath, JSON.stringify(this.bookings, null, 2), 'utf-8');
     }
 }

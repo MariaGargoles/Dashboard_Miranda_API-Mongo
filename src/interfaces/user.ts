@@ -10,4 +10,5 @@ export interface User extends Identifiable {
     email: string;
     contact: string;
     status: "ACTIVE" | "INACTIVE";
+    password: string;
   }

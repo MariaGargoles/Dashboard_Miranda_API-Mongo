@@ -14,10 +14,10 @@ export class UserService {
         return this.users.find(user => user.id === id) || null;
     }
 
-    static async post(item: User): Promise<User[]> {
+    static async post(item: User): Promise<User> {
         this.users.push(item);
         this.saveToFile();
-        return this.users;
+        return item; 
     }
 
     static async deleteID(id: number): Promise<User[]> {
@@ -26,12 +26,12 @@ export class UserService {
         return this.users;
     }
 
-    static async put(update: User): Promise<User[] | null> {
+    static async put(update: User): Promise<User | null> {
         const index = this.users.findIndex(user => user.id === update.id);
         if (index !== -1) {
             this.users[index] = update;
             this.saveToFile();
-            return this.users;
+            return this.users[index]; 
         }
         return null;
     }

@@ -1,6 +1,7 @@
 import { Identifiable } from "../interfaces/id";
 
 export interface Booking extends Identifiable {
+    roomId: any;
     Name: string;
     OrderDate: Date;
     CheckIn: Date;

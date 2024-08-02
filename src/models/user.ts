@@ -8,8 +8,8 @@ export const UserSchema = new Schema<User>({
     description: { type: String, required: true },
     email: { type: String, required: true },
     contact: { type: String, required: true },
-    status: { type: String, enum: ["ACTIVE", "INACTIVE"], required: true }
-
+    status: { type: String, enum: ["ACTIVE", "INACTIVE"], required: true },
+    password: { type: String, required: true }
 
 
 });

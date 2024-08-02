@@ -70,23 +70,22 @@ const run = async () => {
 
     //Users
     const createdUsers: User[] = [];
-    const userService = new UserService();
     
     for (let i = 0; i < NUM_USERS; i++) {
         
         const userData: User = {
-            id: i + 1, 
+            id: i + 1,
             name: faker.person.fullName(),
-            foto: faker.image.url(), 
+            foto: faker.image.url(),
             email: faker.internet.email(),
-            contact: faker.phone.number(), 
+            contact: faker.phone.number(),
             description: faker.lorem.sentence(),
-            startDate: faker.date.past(), 
-            status: faker.helpers.arrayElement(["ACTIVE", "INACTIVE"]), 
-            
+            startDate: faker.date.past(),
+            status: faker.helpers.arrayElement(["ACTIVE", "INACTIVE"]),
+            password: ''
         };
 
-        const newUser = await UserService.post(userData);
+        const newUser = await UserService.post(userData); 
         createdUsers.push(newUser);
     }
 
@@ -94,22 +93,19 @@ const run = async () => {
     const myPassword = 'miranda';
     const myHashedPassword = await bcrypt.hash(myPassword, 10);
     const personalUser: User = {
-        id: NUM_USERS + 1, 
+        id: NUM_USERS + 1,
         name: 'Maria Gargoles',
         email: 'segwanda12@gmail.com',
-        phone: faker.phone.number(),
-        photo: faker.image.url(),
-        position: {
-            name: 'Manager',
-            description: faker.lorem.sentence(),
-        },
-        date: faker.date.past().toISOString(),
-        status: faker.helpers.arrayElement(["valid", "invalid"]),
+        foto: faker.image.url(),
+        description: faker.lorem.sentence(),
+        startDate: faker.date.past(),
+        status: faker.helpers.arrayElement(["ACTIVE", "INACTIVE"]),
         password: myHashedPassword,
+        contact: ''
     };
 
-    const myUser = await userService.post(personalUser);
-    createdUsers.push(myUser);
+    const myUser = await UserService.post(personalUser);
+    createdUsers.push(myUser); 
 
     // Booking 
     const createdBookings: Booking[] = [];
@@ -121,10 +117,10 @@ const run = async () => {
         checkInDate.setDate(orderDate.getDate() + faker.number.int({ min: 1, max: 10 }));
         const checkOutDate: Date = new Date(checkInDate);
         checkOutDate.setDate(checkOutDate.getDate() + faker.number.int({ min: 2, max: 20 }));
-        const roomId: number = createdRooms[Math.floor(Math.random() * createdRooms.length)].id;
+        
 
         const bookingData: Booking = {
-            id: i + 1, 
+            id: i + 1,
             Name: `Booking ${faker.number.int({ min: 0, max: 999 })}`,
             OrderDate: faker.date.past(),
             CheckIn: checkInDate,
@@ -133,11 +129,13 @@ const run = async () => {
             RoomType: faker.lorem.words(2),
             RoomNumber: faker.number.int({ min: 1, max: 100 }),
             Status: faker.helpers.arrayElement(["In Progress", "Check In", "Check Out"]),
+            roomId: undefined
         };
 
         const newBooking = await bookingService.post(bookingData);
         createdBookings.push(newBooking);
     }
+    console.log('Datos de prueba insertados correctamente');
 };
 
-run();
+run().catch(error => console.log(error));
