@@ -17,6 +17,7 @@ exports.UserService = void 0;
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const users_json_1 = __importDefault(require("../data/users.json"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
 class UserService {
     static getAll() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -31,9 +32,11 @@ class UserService {
     }
     static post(item) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.users.push(item);
+            const hashedPassword = yield bcrypt_1.default.hash(item.password, 10);
+            const newUser = Object.assign(Object.assign({}, item), { password: hashedPassword });
+            this.users.push(newUser);
             this.saveToFile();
-            return this.users;
+            return newUser;
         });
     }
     static deleteID(id) {
