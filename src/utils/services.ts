@@ -1,44 +1,29 @@
-import { Identifiable } from "../interfaces/id";
 
-export interface ServiceController<T extends Identifiable> {
-    getAll(): Promise<T[]>;
-    getId(id: string): Promise<T | null>;
-    post(item: T): Promise<T[]>;  
-    deleteID(id: string): Promise<T[]>;
-    put(item: T): Promise<T[] | null>; 
-}
+export class ServicesGeneric<T> {
+    protected model: any;
 
-export class ServicesGeneric<T extends Identifiable> implements ServiceController<T> {
-    private data: T[];
-
-    constructor(initial: T[]) {
-        this.data = initial;
+    constructor(model: any) {
+        this.model = model;
     }
 
     async getAll(): Promise<T[]> {
-        return this.data;
+        return this.model.find().exec();
     }
 
     async getId(id: string): Promise<T | null> {
-        const numericId = parseInt(id, 10);
-        const item = this.data.find(item => item.id === numericId);
-        return item || null;
+        return this.model.findById(id).exec();
     }
 
-    async post(item: T): Promise<T[]> {
-        this.data.push(item);
-        return this.data;
+    async add(item: T): Promise<T> {
+        return this.model.create(item);
     }
 
-    async deleteID(id: string): Promise<T[]> {
-        const numericId = parseInt(id, 10);
-        this.data = this.data.filter(item => item.id !== numericId);
-        return this.data; 
+    async deleteID(id: string): Promise<T | null> {
+        return this.model.findByIdAndDelete(id).exec();
     }
 
-    async put(update: T): Promise<T[] | null> {
-        this.data = this.data.map(item => 
-            item.id === update.id ? update : item);
-        return this.data;
+    async update(item: T): Promise<T | null> {
+        const { _id, ...rest } = item as any;
+        return this.model.findByIdAndUpdate(_id, rest, { new: true }).exec();
     }
 }

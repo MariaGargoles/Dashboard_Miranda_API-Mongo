@@ -1,81 +1,62 @@
-import { Identifiable } from "../interfaces/id";
-import { Model } from "mongoose";
-import { ErrorApi } from "../utils/error";
+import { NextFunction, Request, Response } from "express";
+import { ServicesGeneric } from "../utils/services"
 
-export interface ServiceController<T extends Identifiable> {
-    getAll(): Promise<T[]>;
-    getbyId(id: string): Promise<T | null>;
-    add(item: T): Promise<T>;
-    deleteID(id: string): Promise<T | null>;
-    update(item: T): Promise<T | null>;
-}
-
-export class ServicesGeneric<T extends Identifiable> implements ServiceController<T> {
-    protected model: Model<T>;
-
-    constructor(model: Model<T>) {
-        this.model = model;
-    }
-
-    async getAll(): Promise<T[]> {
+export const ControllersGeneric = (Service: ServicesGeneric<any>) => {
+    const getAll = async (_req: Request, res: Response, next: NextFunction) => {
         try {
-            return await this.model.find().exec();
+            const data = await Service.getAll();
+            res.json(data);
         } catch (error) {
-            throw ErrorApi.fromMessage('Failed to retrieve items').withStatus(500);
+            next(error);
         }
-    }
+    };
 
-    async getbyId(id: string): Promise<T | null> {
+    const getbyId = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const item = await this.model.findById(id).exec();
-            if (!item) {
-                throw ErrorApi.fromStatus('Item not found', 404);
-            }
-            return item;
+            const id = req.params.id;
+            const data = await Service.getId(id);
+            res.json(data);
         } catch (error) {
-            if (error instanceof ErrorApi) {
-                throw error; 
-            }
-            throw ErrorApi.fromMessage('Failed to retrieve item').withStatus(500);
+            next(error);
         }
-    }
+    };
 
-    async add(item: T): Promise<T> {
+    const add = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const newItem = new this.model(item);
-            return await newItem.save();
+            const newItem = req.body;
+            const createdItem = await Service.add(newItem);
+            res.json(createdItem);
         } catch (error) {
-            throw ErrorApi.fromMessage('Failed to add item').withStatus(500);
+            next(error);
         }
-    }
+    };
 
-    async deleteID(id: string): Promise<T | null> {
+    const deleteID = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const item = await this.model.findByIdAndDelete(id).exec();
-            if (!item) {
-                throw ErrorApi.fromStatus('Item not found', 404);
-            }
-            return item;
+            const id = req.params.id;
+            const removedItem = await Service.deleteID(id);
+            res.json(removedItem);
         } catch (error) {
-            if (error instanceof ErrorApi) {
-                throw error; 
-            }
-            throw ErrorApi.fromMessage('Failed to delete item').withStatus(500);
+            next(error);
         }
-    }
+    };
 
-    async update(item: T): Promise<T | null> {
+    const update = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const updatedItem = await this.model.findByIdAndUpdate(item._id, item, { new: true }).exec();
-            if (!updatedItem) {
-                throw ErrorApi.fromStatus('Item not found', 404);
-            }
-            return updatedItem;
+            const id = req.params.id;
+            const updatedData = req.body;
+            const result = await Service.update({ _id: id, ...updatedData });
+            res.json(result);
         } catch (error) {
-            if (error instanceof ErrorApi) {
-                throw error; 
-            }
-            throw ErrorApi.fromMessage('Failed to update item').withStatus(500);
+            next(error);
         }
-    }
-}
+    };
+
+    return {
+        getAll,
+        getbyId,
+        add,
+        deleteID,
+        update
+    };
+};
