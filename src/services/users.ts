@@ -2,6 +2,7 @@ import { User } from '../interfaces/user';
 import fs from 'fs';
 import path from 'path';
 import usersData from '../data/users.json';
+import bcrypt from 'bcrypt';
 
 export class UserService  {
     private static users: User[] = this.convertUsers(usersData);
@@ -15,10 +16,14 @@ export class UserService  {
         return this.users.find(user => user.id === numericId) || null;
     }
 
-    static async post(item: User): Promise<User[]> {
-        this.users.push(item);
+    static async post(item: User): Promise<User> {
+        
+        const hashedPassword = await bcrypt.hash(item.password, 10);
+        const newUser = { ...item, password: hashedPassword };
+
+        this.users.push(newUser);
         this.saveToFile();
-        return this.users; 
+        return newUser;
     }
 
     static async deleteID(id: string): Promise<User[]> {
