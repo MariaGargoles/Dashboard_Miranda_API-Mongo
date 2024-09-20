@@ -9,133 +9,136 @@ import { ContactMessage } from './interfaces/messages';
 import { ContactMessagesService } from './services/contactmessages';
 import { Booking } from './interfaces/booking';
 import { BookingService } from './services/booking';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
-const NUM_BOOKINGS = 30;
-const NUM_CONTACTS = 10;
-const NUM_ROOMS = 20;
-const NUM_USERS = 25;
+const NumBookings = 50;
+const NumContacts = 15;
+const NumRooms = 50;
+const NumUsers = 20;
 
 connectDB().catch(error => console.log(error));
 
 const run = async () => {
     await mongoose.connection.dropDatabase();
 
-   //ContactMessages
-    const createdContacts: ContactMessage[] = [];
-    const actionStatuses: ("publish" | "archived")[] = ["publish", "archived"];
+    const CreatedContact: ContactMessage[] = [];
+    const contactService = new ContactMessagesService();
 
-    for (let i = 0; i < NUM_CONTACTS; i++) {
-        const actionStatus = faker.helpers.arrayElement(actionStatuses);
-        const contactData: ContactMessage = {
-            id: i + 1, 
+    for (let i = 0; i < NumContacts; i++) {
+        const DataContact: ContactMessage & { id: number } = {
+            id: faker.number.int(),
             date: faker.date.past(),
-            name: faker.person.fullName(),
-            email: faker.internet.email(),
+            client: {
+                name: faker.person.fullName(),
+                email: faker.internet.email(),
+                phone: faker.phone.number(),
+                image: faker.image.url(),
+            },
             subject: faker.lorem.sentence(),
             comment: faker.lorem.sentence(),
-            action: actionStatus,
+            archived: Math.random() < 0.5 ? "true" : "false",
         };
-
-        ContactMessagesService.addContactMessage(contactData); 
-        createdContacts.push(contactData);
+        
+        const NewContact = await contactService.add(DataContact);
+        CreatedContact.push(NewContact);
     }
 
-    //Rooms
-    const createdRooms: Room[] = [];
-    
+    const CreatedRoom: Room[] = [];
+    const roomService = new RoomService();
+    const amenities: string[] = ['Air conditioner', 'High speed WiFi', 'Breakfast', 'Kitchen', 'Cleaning', 'Shower', 'Grocery', 'Shop Near', 'Towels', 'TV', 'Beach views'];
 
-    const amenitiesList: string[] = ['Air conditioner', 'High speed WiFi', 'Breakfast', 'Kitchen', 'Cleaning', 'Shower', 'Grocery', 'Shop Near', 'Towels', 'TV', 'Beach views'];
-
-    for (let i = 0; i < NUM_ROOMS; i++) {
+    for (let i = 0; i < NumRooms; i++) {
         const photosArray: string[] = [];
         for (let j = 0; j < 4; j++) {
-            photosArray.push(faker.image.imageUrl());
+            photosArray.push(faker.image.url());
         }
-        const roomData: Room = {
-            id: i + 1, 
-            photo: faker.image.imageUrl(),
-            number: faker.number.int({ min: 1, max: 100 }).toString(),
-            bedType: faker.lorem.word(),
-            amenities: faker.helpers.arrayElements(amenitiesList, { min: 1, max: 5 }),
-            rate: faker.number.int({ min: 10, max: 500 }),
-            offerPrice: faker.number.int({ min: 0, max: 50 }),
-            status: Math.random() < 0.5 ? 'Available' : 'Booked',
-            roomFloor: faker.lorem.word(),
-        };
 
-        const newRoom = await RoomService.post(roomData);
-        createdRooms.push(newRoom[newRoom.length - 1]);
-    }
-
-    //Users
-    const createdUsers: User[] = [];
-    
-    for (let i = 0; i < NUM_USERS; i++) {
-        
-        const userData: User = {
-            id: i + 1,
-            name: faker.person.fullName(),
-            foto: faker.image.url(),
-            email: faker.internet.email(),
-            contact: faker.phone.number(),
+        const DataRoom: Room & { id: number } = {
+            id: faker.number.int(),
+            roomNumber: faker.number.int({ min: 1, max: 100 }),
+            availability: Math.random() < 0.5 ? 'available' : 'booked',
+            roomType: faker.lorem.words(2),
             description: faker.lorem.sentence(),
-            startDate: faker.date.past(),
-            status: faker.helpers.arrayElement(["ACTIVE", "INACTIVE"]),
-            password:  faker.internet.password(),
+            offer: Math.random() < 0.5,
+            price: faker.number.int({ min: 10, max: 500 }),
+            discount: faker.number.int({ min: 0, max: 50 }),
+            cancellation: faker.lorem.sentence(),
+            amenities: faker.helpers.arrayElements(amenities, { min: 1, max: 5 }),
+            photosArray: photosArray,
         };
 
-        const newUser = await UserService.post(userData); 
-        createdUsers.push(newUser);
+        const NewRoom = await roomService.add(DataRoom);
+        CreatedRoom.push(NewRoom);
     }
 
-    // Personal User
+    const CreatedUser: User[] = [];
+    const userService = new UserService();
+
+    for (let i = 0; i < NumUsers; i++) {
+        const password = faker.internet.password();
+        const passwordHashed = await bcrypt.hash(password, 10);
+
+        const DataUser: User & { id: number } = {
+            id: faker.number.int(),
+            name: faker.person.fullName(),
+            email: faker.internet.email(),
+            foto: faker.image.url(),
+            startDate: faker.date.past(),
+            description: faker.lorem.sentence(),
+            contact: faker.phone.number(),
+            status: "ACTIVE",
+            password: passwordHashed,
+        };
+
+        const NewUser = await userService.add(DataUser);
+        CreatedUser.push(NewUser);
+    }
+
     const myPassword = 'miranda';
     const myHashedPassword = await bcrypt.hash(myPassword, 10);
-    const personalUser: User = {
-        id: NUM_USERS + 1,
+    const personalUser: User & { id: number } = {
+        id: faker.number.int(),
         name: 'Maria Gargoles',
         email: 'segwanda12@gmail.com',
         foto: faker.image.url(),
         description: faker.lorem.sentence(),
         startDate: faker.date.past(),
-        status: faker.helpers.arrayElement(["ACTIVE", "INACTIVE"]),
+        status: "ACTIVE",
         password: myHashedPassword,
-        contact: ''
+        contact: faker.phone.number(),
     };
 
-    const myUser = await UserService.post(personalUser);
-    createdUsers.push(myUser); 
+    const MyUser = await userService.add(personalUser);
+    CreatedUser.push(MyUser);
 
-    // Booking 
-    const createdBookings: Booking[] = [];
+    const CreatedBooking: Booking[] = [];
     const bookingService = new BookingService();
 
-    for (let i = 0; i < NUM_BOOKINGS; i++) {
+    for (let i = 0; i < NumBookings; i++) {
         const orderDate: Date = faker.date.between({ from: '2024-01-01T00:00:00.000Z', to: '2024-12-31T00:00:00.000Z' });
         const checkInDate: Date = new Date(orderDate);
         checkInDate.setDate(orderDate.getDate() + faker.number.int({ min: 1, max: 10 }));
         const checkOutDate: Date = new Date(checkInDate);
-        checkOutDate.setDate(checkOutDate.getDate() + faker.number.int({ min: 2, max: 20 }));
-        
+        checkOutDate.setDate(checkInDate.getDate() + faker.number.int({ min: 2, max: 20 }));
+        const roomId: string = (CreatedRoom[Math.floor(Math.random() * CreatedRoom.length)] as unknown as { _id: string })._id;
 
-        const bookingData: Booking = {
-            id: i + 1,
+        const DataBooking: Booking & { id: number } = {
+            id: faker.number.int(),
             Name: `Booking ${faker.number.int({ min: 0, max: 999 })}`,
-            OrderDate: faker.date.past(),
-            CheckIn: checkInDate,
-            CheckOut: checkOutDate,
-            SpecialRequest: faker.lorem.sentence(),
-            RoomType: faker.lorem.words(2),
-            RoomNumber: faker.number.int({ min: 1, max: 100 }),
-            Status: faker.helpers.arrayElement(["In Progress", "Check In", "Check Out"]),
-            roomId: undefined
+            OrderDate: faker.date.past().toISOString(),
+            checkIn: checkInDate.toISOString().split('T')[0],
+            checkOut: checkOutDate.toISOString().split('T')[0],
+            specialRequest: faker.lorem.sentence(),
+            roomId: roomId,
+            status: faker.helpers.arrayElement(["In progress", "Check In", "Check Out"]),
         };
 
-        const newBooking = await bookingService.post(bookingData);
-        createdBookings.push(newBooking);
+        const NewBooking = await bookingService.add(DataBooking);
+        CreatedBooking.push(NewBooking);
     }
-    console.log('Datos de prueba insertados correctamente');
+
+    console.log('Seed data inserted successfully');
+    await mongoose.connection.close();
 };
 
 run().catch(error => console.log(error));

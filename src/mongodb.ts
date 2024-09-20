@@ -1,20 +1,16 @@
 import mongoose from 'mongoose';
 import dotenv from "dotenv";
 
-
 dotenv.config()
 
-export async function connectDB(){
-    mongoose.connection.on('conected', () => {
-        console.log('mongoose ​​successfully connected to database')
-    })
+export async function connectDB() {
+    mongoose.connection.on('connected', () => {
+        console.log('Mongoose successfully connected to the database');
+    });
 
-    mongoose.connection.on('conected', (error) => {
-        console.log('error connecting mongoose ​​to database', error)
-    })
+    mongoose.connection.on('error', (error) => {
+        console.log('Error connecting Mongoose to the database', error);
+    });
 
-    await mongoose.connect(process.env.MONGO_KEY!)
+    await mongoose.connect(process.env.MONGO_KEY!);
 }
-
-
-

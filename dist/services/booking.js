@@ -20,19 +20,19 @@ class BookingService {
         this.bookings = [];
         this.nextId = 1;
     }
-    static put(_arg0, _put) {
+    static put(arg0, put) {
         throw new Error("Method not implemented.");
     }
-    static deleteID(_arg0, _deleteID) {
+    static deleteID(arg0, deleteID) {
         throw new Error("Method not implemented.");
     }
-    static post(_arg0, _post) {
+    static post(arg0, post) {
         throw new Error("Method not implemented.");
     }
-    static getId(_arg0, _getId) {
+    static getId(arg0, getId) {
         throw new Error("Method not implemented.");
     }
-    static getAll(_arg0, _getAll) {
+    static getAll(arg0, getAll) {
         throw new Error("Method not implemented.");
     }
     getAll() {

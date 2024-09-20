@@ -1,68 +1,69 @@
 import { ContactMessage } from '../interfaces/messages';
-import fs from 'fs';
-import path from 'path';
-import { Request, Response } from 'express';
+import { ErrorApi } from "../utils/error";
+import { ServicesGeneric } from "../utils/services";
+import { MessageModel } from "../models/messages";
 
-export class ContactMessagesService {
-    private static contactMessages: ContactMessage[] = [];
-    private static filePath = path.join(__dirname, '../data/contactMessages.json');
-
-    static {
-        const jsonData = fs.readFileSync(this.filePath, 'utf-8');
-        this.contactMessages = JSON.parse(jsonData);
-    }
-
-  
-    static getAll(_req: Request, res: Response): void {
-        res.json(this.contactMessages);
+export class ContactMessagesService extends ServicesGeneric<ContactMessage> {
+    constructor() {
+        super(MessageModel);
     }
 
     
-    static getId(req: Request, res: Response): void {
-        const numericId = parseInt(req.params.id, 10);
-        const message = this.contactMessages.find(message => message.id === numericId) || null;
-        if (message) {
-            res.json(message);
-        } else {
-            res.status(404).send('Not Found');
+    async addContactMessage(contactMessage: ContactMessage): Promise<ContactMessage> {
+        try {
+            const newMessage = await this.model.create(contactMessage);
+            return newMessage;
+        } catch (error) {
+            throw ErrorApi.fromMessage('Failed to add contact message').withStatus(500);
+        }
+    }
+
+    
+    async getAllContactMessages(): Promise<ContactMessage[]> {
+        try {
+            const messages = await this.model.find().exec();
+            return messages;
+        } catch (error) {
+            throw ErrorApi.fromMessage('Failed to get contact messages').withStatus(500);
         }
     }
 
    
-    static post(req: Request, res: Response): void {
-        const item: ContactMessage = req.body;
-        this.contactMessages.push(item);
-        this.saveToFile();
-        res.status(201).json(this.contactMessages);
-    }
-
-    
-    static deleteID(req: Request, res: Response): void {
-        const numericId = parseInt(req.params.id, 10);
-        this.contactMessages = this.contactMessages.filter(message => message.id !== numericId);
-        this.saveToFile();
-        res.json(this.contactMessages);
-    }
-
- 
-    static put(req: Request, res: Response): void {
-        const update: ContactMessage = req.body;
-        const index = this.contactMessages.findIndex(message => message.id === update.id);
-        if (index !== -1) {
-            this.contactMessages[index] = update;
-            this.saveToFile();
-            res.json(this.contactMessages);
-        } else {
-            res.status(404).send('Not Found');
+    async getContactMessageById(id: string): Promise<ContactMessage | null> {
+        try {
+            const message = await this.model.findById(id).exec();
+            if (!message) {
+                throw ErrorApi.fromMessage('Contact message not found').withStatus(404);
+            }
+            return message;
+        } catch (error) {
+            throw ErrorApi.fromMessage('Failed to get contact message').withStatus(500);
         }
     }
 
-    static addContactMessage(contactMessage: ContactMessage): void {
-        this.contactMessages.push(contactMessage);
-        this.saveToFile();
+    
+    async updateContactMessage(id: string, messageData: Partial<ContactMessage>): Promise<ContactMessage | null> {
+        try {
+            const updatedMessage = await this.model.findByIdAndUpdate(id, messageData, { new: true }).exec();
+            if (!updatedMessage) {
+                throw ErrorApi.fromMessage('Contact message not found').withStatus(404);
+            }
+            return updatedMessage;
+        } catch (error) {
+            throw ErrorApi.fromMessage('Failed to update contact message').withStatus(500);
+        }
     }
 
-    private static saveToFile(): void {
-        fs.writeFileSync(this.filePath, JSON.stringify(this.contactMessages, null, 2), 'utf-8');
+    
+    async deleteContactMessage(id: string): Promise<ContactMessage | null> {
+        try {
+            const deletedMessage = await this.model.findByIdAndDelete(id).exec();
+            if (!deletedMessage) {
+                throw ErrorApi.fromMessage('Contact message not found').withStatus(404);
+            }
+            return deletedMessage;
+        } catch (error) {
+            throw ErrorApi.fromMessage('Failed to delete contact message').withStatus(500);
+        }
     }
 }

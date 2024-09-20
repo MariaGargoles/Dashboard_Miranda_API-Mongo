@@ -1,52 +1,41 @@
-import { User } from '../interfaces/user';
-import fs from 'fs';
-import path from 'path';
-import usersData from '../data/users.json';
+import { ServicesGeneric } from "../utils/services";
+import { UserModel } from "../models/user";
+import { User } from "../interfaces/user";
+import bcrypt from 'bcryptjs';
+import { ErrorApi } from "../utils/error";
 
-export class UserService  {
-    private static users: User[] = this.convertUsers(usersData);
-
-    static async getAll(): Promise<User[]> {
-        return this.users;
+export class UserService extends ServicesGeneric<User> {
+    static post(_userData: User) {
+        throw new Error('Method not implemented.');
+    }
+    constructor() {
+        super(UserModel);
     }
 
-    static async getId(id: string): Promise<User | null> {
-        const numericId = parseInt(id, 10);
-        return this.users.find(user => user.id === numericId) || null;
-    }
+    async addUser(user: User): Promise<User> {
+        try {
+            
+            const existingUser = await this.model.findOne({ email: user.email }).exec();
+            if (existingUser) {
+                throw ErrorApi.fromMessage('User already exists').withStatus(400);
+            }
 
-    static async post(item: User): Promise<User[]> {
-        this.users.push(item);
-        this.saveToFile();
-        return this.users; 
-    }
+            
+            const saltRounds = 10;
+            const hashedPassword = await bcrypt.hash(user.password, saltRounds);
+            const userWithHashedPassword = {
+                ...user,
+                password: hashedPassword
+            };
 
-    static async deleteID(id: string): Promise<User[]> {
-        const numericId = parseInt(id, 10);
-        this.users = this.users.filter(user => user.id !== numericId);
-        this.saveToFile();
-        return this.users; 
-    }
-
-    static async put(update: User): Promise<User[] | null> {
-        const index = this.users.findIndex(user => user.id === update.id);
-        if (index !== -1) {
-            this.users[index] = update;
-            this.saveToFile();
-            return this.users; 
+            
+            const newUser = await this.model.create(userWithHashedPassword);
+            return newUser;
+        } catch (error) {
+            if (error instanceof ErrorApi) {
+                throw error;
+            }
+            throw ErrorApi.fromMessage('Failed to add user').withStatus(500);
         }
-        return null;
-    }
-
-    private static saveToFile(): void {
-        const filePath = path.join(__dirname, '../data/users.json');
-        fs.writeFileSync(filePath, JSON.stringify(this.users, null, 2), 'utf-8');
-    }
-
-    private static convertUsers(usersData: any[]): User[] {
-        return usersData.map(user => ({
-            ...user,
-            startDate: new Date(user.startDate) 
-        }));
     }
 }

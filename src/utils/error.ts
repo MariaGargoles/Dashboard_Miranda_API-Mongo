@@ -1,4 +1,7 @@
 export class ErrorApi extends Error {
+    withStatus(_arg0: number) {
+        throw new Error("Method not implemented.");
+    }
     status: number;
     safe: boolean;
 

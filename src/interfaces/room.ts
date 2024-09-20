@@ -2,6 +2,7 @@ import { Identifiable } from "./id";
 
 
 export interface Room extends Identifiable {
+  name: any;
   photo: string;
   number: string;
   bedType: string;

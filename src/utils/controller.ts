@@ -1,9 +1,8 @@
-
 import { NextFunction, Request, Response } from "express";
-import { ServiceController } from "./services"; 
+import { ServicesGeneric } from "./services"; 
 import { Identifiable } from "../interfaces/id";
 
-export const ControllersGeneric = <T extends Identifiable>(Model: ServiceController<T>) => {
+export const ControllersGeneric = <T extends Identifiable>(Model: ServicesGeneric<T>) => {
     const getAll = async (_req: Request, res: Response, next: NextFunction) => {
         try {
             const data = await Model.getAll();
@@ -30,7 +29,7 @@ export const ControllersGeneric = <T extends Identifiable>(Model: ServiceControl
     const post = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const New = req.body;
-            const Create = await Model.post(New);
+            const Create = await Model.add(New); 
             res.status(201).json({ data: Create });
         } catch (error) {
             next(error);
@@ -47,10 +46,10 @@ export const ControllersGeneric = <T extends Identifiable>(Model: ServiceControl
         }
     };
 
-    const put = async (req: Request, res: Response, next: NextFunction) => {
+    const update = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const modify = req.body;
-            const update = await Model.put(modify);
+            const update = await Model.update(modify); 
             if (update) {
                 res.json({ data: update });
             } else {
@@ -66,6 +65,6 @@ export const ControllersGeneric = <T extends Identifiable>(Model: ServiceControl
         getId,
         post,
         deleteID,
-        put
+        update  
     };
 };
