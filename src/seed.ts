@@ -21,56 +21,50 @@ connectDB().catch(error => console.log(error));
 const run = async () => {
     await mongoose.connection.dropDatabase();
 
+    // Seeding ContactMessages
     const CreatedContact: ContactMessage[] = [];
     const contactService = new ContactMessagesService();
 
     for (let i = 0; i < NumContacts; i++) {
-        const DataContact: ContactMessage & { id: number } = {
+        const DataContact: ContactMessage = {
             id: faker.number.int(),
             date: faker.date.past(),
-            client: {
-                name: faker.person.fullName(),
-                email: faker.internet.email(),
-                phone: faker.phone.number(),
-                image: faker.image.url(),
-            },
+            name: faker.person.fullName(),
+            email: faker.internet.email(),
             subject: faker.lorem.sentence(),
             comment: faker.lorem.sentence(),
-            archived: Math.random() < 0.5 ? "true" : "false",
+            action: Math.random() < 0.5 ? "publish" : "archived",
         };
-        
+
         const NewContact = await contactService.add(DataContact);
         CreatedContact.push(NewContact);
     }
 
-    const CreatedRoom: Room[] = [];
-    const roomService = new RoomService();
-    const amenities: string[] = ['Air conditioner', 'High speed WiFi', 'Breakfast', 'Kitchen', 'Cleaning', 'Shower', 'Grocery', 'Shop Near', 'Towels', 'TV', 'Beach views'];
+    // Seeding Rooms
+const CreatedRoom: Room[] = [];
+const roomService = new RoomService();
+const amenities: string[] = ['Air conditioner', 'High speed WiFi', 'Breakfast', 'Kitchen', 'Cleaning', 'Shower', 'Grocery', 'Shop Near', 'Towels', 'TV', 'Beach views'];
 
-    for (let i = 0; i < NumRooms; i++) {
-        const photosArray: string[] = [];
-        for (let j = 0; j < 4; j++) {
-            photosArray.push(faker.image.url());
-        }
+for (let i = 0; i < NumRooms; i++) {
+    const DataRoom: Room = {
+        _id: new mongoose.Types.ObjectId(), 
+        name: `Room ${i + 1}`, 
+        photo: faker.image.url(), 
+        number: faker.number.int({ min: 1, max: 100 }).toString(), 
+        bedType: faker.helpers.arrayElement(['Single', 'Double', 'Queen', 'King']), 
+        amenities: faker.helpers.arrayElements(amenities, { min: 1, max: 5 }), 
+        rate: faker.number.int({ min: 10, max: 500 }), 
+        offerPrice: faker.number.int({ min: 5, max: 400 }), 
+        status: Math.random() < 0.5 ? 'Available' : 'Booked', 
+        roomFloor: faker.number.int({ min: 1, max: 5 }).toString(),
+        id: 0
+    };
 
-        const DataRoom: Room & { id: number } = {
-            id: faker.number.int(),
-            roomNumber: faker.number.int({ min: 1, max: 100 }),
-            availability: Math.random() < 0.5 ? 'available' : 'booked',
-            roomType: faker.lorem.words(2),
-            description: faker.lorem.sentence(),
-            offer: Math.random() < 0.5,
-            price: faker.number.int({ min: 10, max: 500 }),
-            discount: faker.number.int({ min: 0, max: 50 }),
-            cancellation: faker.lorem.sentence(),
-            amenities: faker.helpers.arrayElements(amenities, { min: 1, max: 5 }),
-            photosArray: photosArray,
-        };
+    const NewRoom = await roomService.add(DataRoom);
+    CreatedRoom.push(NewRoom);
+}
 
-        const NewRoom = await roomService.add(DataRoom);
-        CreatedRoom.push(NewRoom);
-    }
-
+    // Seeding Users
     const CreatedUser: User[] = [];
     const userService = new UserService();
 
@@ -78,8 +72,7 @@ const run = async () => {
         const password = faker.internet.password();
         const passwordHashed = await bcrypt.hash(password, 10);
 
-        const DataUser: User & { id: number } = {
-            id: faker.number.int(),
+        const DataUser: User = {
             name: faker.person.fullName(),
             email: faker.internet.email(),
             foto: faker.image.url(),
@@ -88,6 +81,7 @@ const run = async () => {
             contact: faker.phone.number(),
             status: "ACTIVE",
             password: passwordHashed,
+            id: 0
         };
 
         const NewUser = await userService.add(DataUser);
@@ -96,8 +90,7 @@ const run = async () => {
 
     const myPassword = 'miranda';
     const myHashedPassword = await bcrypt.hash(myPassword, 10);
-    const personalUser: User & { id: number } = {
-        id: faker.number.int(),
+    const personalUser: User = {
         name: 'Maria Gargoles',
         email: 'segwanda12@gmail.com',
         foto: faker.image.url(),
@@ -106,39 +99,46 @@ const run = async () => {
         status: "ACTIVE",
         password: myHashedPassword,
         contact: faker.phone.number(),
+        id: 0
     };
 
     const MyUser = await userService.add(personalUser);
     CreatedUser.push(MyUser);
 
+    // Seeding Bookings
     const CreatedBooking: Booking[] = [];
     const bookingService = new BookingService();
-
+    
     for (let i = 0; i < NumBookings; i++) {
         const orderDate: Date = faker.date.between({ from: '2024-01-01T00:00:00.000Z', to: '2024-12-31T00:00:00.000Z' });
         const checkInDate: Date = new Date(orderDate);
         checkInDate.setDate(orderDate.getDate() + faker.number.int({ min: 1, max: 10 }));
         const checkOutDate: Date = new Date(checkInDate);
         checkOutDate.setDate(checkInDate.getDate() + faker.number.int({ min: 2, max: 20 }));
-        const roomId: string = (CreatedRoom[Math.floor(Math.random() * CreatedRoom.length)] as unknown as { _id: string })._id;
-
-        const DataBooking: Booking & { id: number } = {
-            id: faker.number.int(),
-            Name: `Booking ${faker.number.int({ min: 0, max: 999 })}`,
-            OrderDate: faker.date.past().toISOString(),
-            checkIn: checkInDate.toISOString().split('T')[0],
-            checkOut: checkOutDate.toISOString().split('T')[0],
-            specialRequest: faker.lorem.sentence(),
+        const room: any = CreatedRoom[Math.floor(Math.random() * CreatedRoom.length)];
+        const roomId: string = room._id.toString(); 
+        const roomType: string = room.bedType; 
+        const roomNumber: number = parseInt(room.number); 
+    
+        const DataBooking: Booking = {
+            id: faker.number.int(), 
             roomId: roomId,
-            status: faker.helpers.arrayElement(["In progress", "Check In", "Check Out"]),
+            Name: `Booking ${faker.number.int({ min: 0, max: 999 })}`,
+            OrderDate: orderDate,
+            CheckIn: checkInDate,
+            CheckOut: checkOutDate,
+            SpecialRequest: faker.lorem.sentence(),
+            RoomType: roomType,
+            RoomNumber: roomNumber,
+            Status: faker.helpers.arrayElement(["In Progress", "Check In", "Check Out"]),
         };
-
-        const NewBooking = await bookingService.add(DataBooking);
+    
+        const NewBooking = await bookingService.addBooking(DataBooking); 
         CreatedBooking.push(NewBooking);
-    }
+}
 
-    console.log('Seed data inserted successfully');
-    await mongoose.connection.close();
+console.log('Seed data inserted successfully');
+await mongoose.connection.close();
 };
 
 run().catch(error => console.log(error));

@@ -8,41 +8,47 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ServicesGeneric = void 0;
 class ServicesGeneric {
-    constructor(initial) {
-        this.data = initial;
+    constructor(model) {
+        this.model = model;
     }
     getAll() {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.data;
+            return this.model.find().exec();
         });
     }
     getId(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const numericId = parseInt(id, 10);
-            const item = this.data.find(item => item.id === numericId);
-            return item || null;
+            return this.model.findById(id).exec();
         });
     }
-    post(item) {
+    add(item) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.data.push(item);
-            return this.data;
+            return this.model.create(item);
         });
     }
     deleteID(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const numericId = parseInt(id, 10);
-            this.data = this.data.filter(item => item.id !== numericId);
-            return this.data;
+            return this.model.findByIdAndDelete(id).exec();
         });
     }
-    put(update) {
+    update(item) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.data = this.data.map(item => item.id === update.id ? update : item);
-            return this.data;
+            const _a = item, { _id } = _a, rest = __rest(_a, ["_id"]);
+            return this.model.findByIdAndUpdate(_id, rest, { new: true }).exec();
         });
     }
 }

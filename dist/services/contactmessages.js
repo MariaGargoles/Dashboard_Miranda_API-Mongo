@@ -1,63 +1,100 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContactMessagesService = void 0;
-const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
-class ContactMessagesService {
-    static getAll(_req, res) {
-        res.json(this.contactMessages);
+const error_1 = require("../utils/error");
+const services_1 = require("../utils/services");
+const messages_1 = require("../models/messages");
+class ContactMessagesService extends services_1.ServicesGeneric {
+    static put(_arg0, _put) {
+        throw new Error("Method not implemented.");
     }
-    static getId(req, res) {
-        const numericId = parseInt(req.params.id, 10);
-        const message = this.contactMessages.find(message => message.id === numericId) || null;
-        if (message) {
-            res.json(message);
-        }
-        else {
-            res.status(404).send('Not Found');
-        }
+    static deleteID(_arg0, _deleteID) {
+        throw new Error("Method not implemented.");
     }
-    static post(req, res) {
-        const item = req.body;
-        this.contactMessages.push(item);
-        this.saveToFile();
-        res.status(201).json(this.contactMessages);
+    static post(_arg0, _post) {
+        throw new Error("Method not implemented.");
     }
-    static deleteID(req, res) {
-        const numericId = parseInt(req.params.id, 10);
-        this.contactMessages = this.contactMessages.filter(message => message.id !== numericId);
-        this.saveToFile();
-        res.json(this.contactMessages);
+    static getId(_arg0, _getId) {
+        throw new Error("Method not implemented.");
     }
-    static put(req, res) {
-        const update = req.body;
-        const index = this.contactMessages.findIndex(message => message.id === update.id);
-        if (index !== -1) {
-            this.contactMessages[index] = update;
-            this.saveToFile();
-            res.json(this.contactMessages);
-        }
-        else {
-            res.status(404).send('Not Found');
-        }
+    static getAll(_arg0, _getAll) {
+        throw new Error("Method not implemented.");
     }
-    static addContactMessage(contactMessage) {
-        this.contactMessages.push(contactMessage);
-        this.saveToFile();
+    constructor() {
+        super(messages_1.MessageModel);
     }
-    static saveToFile() {
-        fs_1.default.writeFileSync(this.filePath, JSON.stringify(this.contactMessages, null, 2), 'utf-8');
+    addContactMessage(contactMessage) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const newMessage = yield this.model.create(contactMessage);
+                return newMessage;
+            }
+            catch (error) {
+                throw error_1.ErrorApi.fromMessage('Failed to add contact message').withStatus(500);
+            }
+        });
+    }
+    getAllContactMessages() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const messages = yield this.model.find().exec();
+                return messages;
+            }
+            catch (error) {
+                throw error_1.ErrorApi.fromMessage('Failed to get contact messages').withStatus(500);
+            }
+        });
+    }
+    getContactMessageById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const message = yield this.model.findById(id).exec();
+                if (!message) {
+                    throw error_1.ErrorApi.fromMessage('Contact message not found').withStatus(404);
+                }
+                return message;
+            }
+            catch (error) {
+                throw error_1.ErrorApi.fromMessage('Failed to get contact message').withStatus(500);
+            }
+        });
+    }
+    updateContactMessage(id, messageData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const updatedMessage = yield this.model.findByIdAndUpdate(id, messageData, { new: true }).exec();
+                if (!updatedMessage) {
+                    throw error_1.ErrorApi.fromMessage('Contact message not found').withStatus(404);
+                }
+                return updatedMessage;
+            }
+            catch (error) {
+                throw error_1.ErrorApi.fromMessage('Failed to update contact message').withStatus(500);
+            }
+        });
+    }
+    deleteContactMessage(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const deletedMessage = yield this.model.findByIdAndDelete(id).exec();
+                if (!deletedMessage) {
+                    throw error_1.ErrorApi.fromMessage('Contact message not found').withStatus(404);
+                }
+                return deletedMessage;
+            }
+            catch (error) {
+                throw error_1.ErrorApi.fromMessage('Failed to delete contact message').withStatus(500);
+            }
+        });
     }
 }
 exports.ContactMessagesService = ContactMessagesService;
-_a = ContactMessagesService;
-ContactMessagesService.contactMessages = [];
-ContactMessagesService.filePath = path_1.default.join(__dirname, '../data/contactMessages.json');
-(() => {
-    const jsonData = fs_1.default.readFileSync(_a.filePath, 'utf-8');
-    _a.contactMessages = JSON.parse(jsonData);
-})();

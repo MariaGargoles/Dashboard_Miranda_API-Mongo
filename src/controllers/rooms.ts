@@ -1,19 +1,18 @@
 import { Router } from 'express';
-import { RoomService } from '../services/room';
+import { ContactMessagesService } from '../services/contactmessages';
 import { ControllersGeneric } from '../utils/controller';
-import { Room } from '../interfaces/room';
 import { authTokenMiddleware } from '../middleware/auth';
 
-const roomRouter = Router();
-const { getAll, getId, post, deleteID, put } = ControllersGeneric<Room>(RoomService);
+const contactRouter = Router();
+const contactMessagesService = new ContactMessagesService();  
+const { getAll, getId, post, deleteID, update } = ControllersGeneric(contactMessagesService); 
 
+contactRouter.use(authTokenMiddleware);
 
-roomRouter.use(authTokenMiddleware);
+contactRouter.get('/', getAll);  
+contactRouter.get('/:id', getId);  
+contactRouter.post('/', post);  
+contactRouter.delete('/:id', deleteID);  
+contactRouter.patch('/:id', update);  
 
-roomRouter.get('/', getAll);
-roomRouter.get('/:id', getId);
-roomRouter.post('/', post);
-roomRouter.delete('/:id', deleteID);
-roomRouter.patch('/:id', put);
-
-export default roomRouter;
+export default contactRouter;
