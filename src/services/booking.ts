@@ -4,6 +4,9 @@ import { ErrorApi } from "../utils/error";
 import { ServicesGeneric } from "../utils/services";
 
 export class BookingService extends ServicesGeneric<Booking> {
+    post() {
+        throw new Error('Method not implemented.');
+    }
     constructor() {
         super(BookingModel);
     }
