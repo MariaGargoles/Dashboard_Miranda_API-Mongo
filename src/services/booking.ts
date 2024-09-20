@@ -1,64 +1,69 @@
-import { Booking } from "../interfaces/booking";
-import fs from 'fs';
-import path from 'path';
+import { Booking } from '../interfaces/booking';
+import { BookingModel } from "../models/booking";
+import { ErrorApi } from "../utils/error";
+import { ServicesGeneric } from "../utils/services";
 
-export class BookingService {
-    static put(_arg0: string, _put: any) {
-        throw new Error("Method not implemented.");
-    }
-    static deleteID(_arg0: string, _deleteID: any) {
-        throw new Error("Method not implemented.");
-    }
-    static post(_arg0: string, _post: any) {
-        throw new Error("Method not implemented.");
-    }
-    static getId(_arg0: string, _getId: any) {
-        throw new Error("Method not implemented.");
-    }
-    static getAll(_arg0: string, _getAll: any) {
-        throw new Error("Method not implemented.");
-    }
-    private bookings: Booking[] = [];
-    private nextId = 1;
-
-    async getAll(): Promise<Booking[]> {
-        return this.bookings;
+export class BookingService extends ServicesGeneric<Booking> {
+    constructor() {
+        super(BookingModel);
     }
 
-    async getId(id: number): Promise<Booking | null> {
-        const booking = this.bookings.find(booking => booking.id === id) || null;
-        return booking;
-    }
-
-    async post(item: Booking): Promise<Booking> {
-        if (!item.Name || !item.OrderDate || !item.CheckIn || !item.CheckOut || !item.RoomType || !item.roomId) {
-            throw new Error('Bad Request: Missing required fields');
+    
+    async addBooking(booking: Booking): Promise<Booking> {
+        try {
+            const newBooking = await this.model.create(booking);
+            return newBooking;
+        } catch (error) {
+            throw ErrorApi.fromMessage('Failed to add booking').withStatus(500);
         }
-
-        item.id = this.nextId++;
-        this.bookings.push(item);
-        this.saveToFile();
-        return item;
     }
 
-    async deleteID(id: number): Promise<Booking[]> {
-        this.bookings = this.bookings.filter(booking => booking.id !== id);
-        this.saveToFile();
-        return this.bookings;
-    }
-
-    async put(update: Booking): Promise<Booking | null> {
-        const index = this.bookings.findIndex(booking => booking.id === update.id);
-        if (index !== -1) {
-            this.bookings[index] = update;
-            this.saveToFile();
-            return this.bookings[index];
+    
+    async getAllBookings(): Promise<Booking[]> {
+        try {
+            const bookings = await this.model.find().exec();
+            return bookings;
+        } catch (error) {
+            throw ErrorApi.fromMessage('Failed to get bookings').withStatus(500);
         }
-        return null;
     }
 
-    private saveToFile(): void {
-        const filePath = path.join(__dirname, '../data/bookings.json');
-        fs.writeFileSync(filePath, JSON.stringify(this.bookings, null, 2), 'utf-8');
+    
+    async getBookingById(id: string): Promise<Booking | null> {
+        try {
+            const booking = await this.model.findById(id).exec();
+            if (!booking) {
+                throw ErrorApi.fromMessage('Booking not found').withStatus(404);
+            }
+            return booking;
+        } catch (error) {
+            throw ErrorApi.fromMessage('Failed to get booking').withStatus(500);
+        }
+    }
+
+    
+    async updateBooking(id: string, bookingData: Partial<Booking>): Promise<Booking | null> {
+        try {
+            const updatedBooking = await this.model.findByIdAndUpdate(id, bookingData, { new: true }).exec();
+            if (!updatedBooking) {
+                throw ErrorApi.fromMessage('Booking not found').withStatus(404);
+            }
+            return updatedBooking;
+        } catch (error) {
+            throw ErrorApi.fromMessage('Failed to update booking').withStatus(500);
+        }
+    }
+
+    
+    async deleteBooking(id: string): Promise<Booking | null> {
+        try {
+            const deletedBooking = await this.model.findByIdAndDelete(id).exec();
+            if (!deletedBooking) {
+                throw ErrorApi.fromMessage('Booking not found').withStatus(404);
+            }
+            return deletedBooking;
+        } catch (error) {
+            throw ErrorApi.fromMessage('Failed to delete booking').withStatus(500);
+        }
     }
 }

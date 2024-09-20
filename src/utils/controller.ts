@@ -1,9 +1,9 @@
 
 import { NextFunction, Request, Response } from "express";
-import { ServiceController } from "./services"; 
+import { ServicesGeneric } from "./services"; 
 import { Identifiable } from "../interfaces/id";
 
-export const ControllersGeneric = <T extends Identifiable>(Model: ServiceController<T>) => {
+export const ControllersGeneric = <T extends Identifiable>(Model: ServicesGeneric<T>) => {
     const getAll = async (_req: Request, res: Response, next: NextFunction) => {
         try {
             const data = await Model.getAll();
