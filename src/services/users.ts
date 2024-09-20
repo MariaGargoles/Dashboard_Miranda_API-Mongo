@@ -5,6 +5,9 @@ import bcrypt from 'bcryptjs';
 import { ErrorApi } from "../utils/error";
 
 export class UserService extends ServicesGeneric<User> {
+    static post(_userData: User) {
+        throw new Error('Method not implemented.');
+    }
     constructor() {
         super(UserModel);
     }
