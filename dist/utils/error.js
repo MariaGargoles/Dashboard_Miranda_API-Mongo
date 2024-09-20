@@ -2,6 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ErrorApi = void 0;
 class ErrorApi extends Error {
+    withStatus(_arg0) {
+        throw new Error("Method not implemented.");
+    }
     constructor(message, status = 500, safe = false) {
         super(message);
         this.status = status;

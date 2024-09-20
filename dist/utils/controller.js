@@ -38,7 +38,7 @@ const ControllersGeneric = (Model) => {
     const post = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const New = req.body;
-            const Create = yield Model.post(New);
+            const Create = yield Model.add(New);
             res.status(201).json({ data: Create });
         }
         catch (error) {
@@ -55,10 +55,10 @@ const ControllersGeneric = (Model) => {
             next(error);
         }
     });
-    const put = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const update = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const modify = req.body;
-            const update = yield Model.put(modify);
+            const update = yield Model.update(modify);
             if (update) {
                 res.json({ data: update });
             }
@@ -75,7 +75,7 @@ const ControllersGeneric = (Model) => {
         getId,
         post,
         deleteID,
-        put
+        update
     };
 };
 exports.ControllersGeneric = ControllersGeneric;

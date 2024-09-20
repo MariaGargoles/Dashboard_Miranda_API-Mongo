@@ -4,11 +4,25 @@ import { ServicesGeneric } from "../utils/services";
 import { MessageModel } from "../models/messages";
 
 export class ContactMessagesService extends ServicesGeneric<ContactMessage> {
+    static put(_arg0: string, _put: any) {
+        throw new Error("Method not implemented.");
+    }
+    static deleteID(_arg0: string, _deleteID: any) {
+        throw new Error("Method not implemented.");
+    }
+    static post(_arg0: string, _post: any) {
+        throw new Error("Method not implemented.");
+    }
+    static getId(_arg0: string, _getId: any) {
+        throw new Error("Method not implemented.");
+    }
+    static getAll(_arg0: string, _getAll: any) {
+        throw new Error("Method not implemented.");
+    }
     constructor() {
         super(MessageModel);
     }
 
-    
     async addContactMessage(contactMessage: ContactMessage): Promise<ContactMessage> {
         try {
             const newMessage = await this.model.create(contactMessage);
@@ -18,7 +32,6 @@ export class ContactMessagesService extends ServicesGeneric<ContactMessage> {
         }
     }
 
-    
     async getAllContactMessages(): Promise<ContactMessage[]> {
         try {
             const messages = await this.model.find().exec();
@@ -28,7 +41,6 @@ export class ContactMessagesService extends ServicesGeneric<ContactMessage> {
         }
     }
 
-   
     async getContactMessageById(id: string): Promise<ContactMessage | null> {
         try {
             const message = await this.model.findById(id).exec();
@@ -41,7 +53,6 @@ export class ContactMessagesService extends ServicesGeneric<ContactMessage> {
         }
     }
 
-    
     async updateContactMessage(id: string, messageData: Partial<ContactMessage>): Promise<ContactMessage | null> {
         try {
             const updatedMessage = await this.model.findByIdAndUpdate(id, messageData, { new: true }).exec();
@@ -54,7 +65,6 @@ export class ContactMessagesService extends ServicesGeneric<ContactMessage> {
         }
     }
 
-    
     async deleteContactMessage(id: string): Promise<ContactMessage | null> {
         try {
             const deletedMessage = await this.model.findByIdAndDelete(id).exec();

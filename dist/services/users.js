@@ -11,61 +11,39 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
-const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
-const users_json_1 = __importDefault(require("../data/users.json"));
-const bcrypt_1 = __importDefault(require("bcrypt"));
-class UserService {
-    static getAll() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.users;
-        });
+const services_1 = require("../utils/services");
+const user_1 = require("../models/user");
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const error_1 = require("../utils/error");
+class UserService extends services_1.ServicesGeneric {
+    static post(_userData) {
+        throw new Error('Method not implemented.');
     }
-    static getId(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const numericId = parseInt(id, 10);
-            return this.users.find(user => user.id === numericId) || null;
-        });
+    constructor() {
+        super(user_1.UserModel);
     }
-    static post(item) {
+    addUser(user) {
         return __awaiter(this, void 0, void 0, function* () {
-            const hashedPassword = yield bcrypt_1.default.hash(item.password, 10);
-            const newUser = Object.assign(Object.assign({}, item), { password: hashedPassword });
-            this.users.push(newUser);
-            this.saveToFile();
-            return newUser;
-        });
-    }
-    static deleteID(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const numericId = parseInt(id, 10);
-            this.users = this.users.filter(user => user.id !== numericId);
-            this.saveToFile();
-            return this.users;
-        });
-    }
-    static put(update) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const index = this.users.findIndex(user => user.id === update.id);
-            if (index !== -1) {
-                this.users[index] = update;
-                this.saveToFile();
-                return this.users;
+            try {
+                const existingUser = yield this.model.findOne({ email: user.email }).exec();
+                if (existingUser) {
+                    throw error_1.ErrorApi.fromMessage('User already exists').withStatus(400);
+                }
+                const saltRounds = 10;
+                const hashedPassword = yield bcryptjs_1.default.hash(user.password, saltRounds);
+                const userWithHashedPassword = Object.assign(Object.assign({}, user), { password: hashedPassword });
+                const newUser = yield this.model.create(userWithHashedPassword);
+                return newUser;
             }
-            return null;
+            catch (error) {
+                if (error instanceof error_1.ErrorApi) {
+                    throw error;
+                }
+                throw error_1.ErrorApi.fromMessage('Failed to add user').withStatus(500);
+            }
         });
-    }
-    static saveToFile() {
-        const filePath = path_1.default.join(__dirname, '../data/users.json');
-        fs_1.default.writeFileSync(filePath, JSON.stringify(this.users, null, 2), 'utf-8');
-    }
-    static convertUsers(usersData) {
-        return usersData.map(user => (Object.assign(Object.assign({}, user), { startDate: new Date(user.startDate) })));
     }
 }
 exports.UserService = UserService;
-_a = UserService;
-UserService.users = _a.convertUsers(users_json_1.default);

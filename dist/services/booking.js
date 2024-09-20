@@ -8,76 +8,107 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BookingService = void 0;
-const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
-class BookingService {
+const booking_1 = require("../models/booking");
+const error_1 = require("../utils/error");
+const services_1 = require("../utils/services");
+class BookingService extends services_1.ServicesGeneric {
+    static put(_arg0, _put) {
+        throw new Error("Method not implemented.");
+    }
+    static deleteID(_arg0, _deleteID) {
+        throw new Error("Method not implemented.");
+    }
+    static post(_arg0, _post) {
+        throw new Error("Method not implemented.");
+    }
+    static getId(_arg0, _getId) {
+        throw new Error("Method not implemented.");
+    }
+    static getAll(_arg0, _getAll) {
+        throw new Error("Method not implemented.");
+    }
+    post() {
+        throw new Error('Method not implemented.');
+    }
     constructor() {
-        this.bookings = [];
-        this.nextId = 1;
+        super(booking_1.BookingModel);
     }
-    static put(arg0, put) {
-        throw new Error("Method not implemented.");
-    }
-    static deleteID(arg0, deleteID) {
-        throw new Error("Method not implemented.");
-    }
-    static post(arg0, post) {
-        throw new Error("Method not implemented.");
-    }
-    static getId(arg0, getId) {
-        throw new Error("Method not implemented.");
-    }
-    static getAll(arg0, getAll) {
-        throw new Error("Method not implemented.");
-    }
-    getAll() {
+    addBooking(booking) {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.bookings;
-        });
-    }
-    getId(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const booking = this.bookings.find(booking => booking.id === id) || null;
-            return booking;
-        });
-    }
-    post(item) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!item.Name || !item.OrderDate || !item.CheckIn || !item.CheckOut || !item.RoomType || !item.roomId) {
-                throw new Error('Bad Request: Missing required fields');
+            try {
+                const existingBooking = yield this.model.findOne({
+                    roomId: booking.roomId,
+                    CheckIn: booking.CheckIn,
+                    CheckOut: booking.CheckOut
+                }).exec();
+                if (existingBooking) {
+                    throw error_1.ErrorApi.fromMessage('Booking already exists for the selected room and dates').withStatus(400);
+                }
+                const newBooking = yield this.model.create(booking);
+                return newBooking;
             }
-            item.id = this.nextId++;
-            this.bookings.push(item);
-            this.saveToFile();
-            return item;
-        });
-    }
-    deleteID(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.bookings = this.bookings.filter(booking => booking.id !== id);
-            this.saveToFile();
-            return this.bookings;
-        });
-    }
-    put(update) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const index = this.bookings.findIndex(booking => booking.id === update.id);
-            if (index !== -1) {
-                this.bookings[index] = update;
-                this.saveToFile();
-                return this.bookings[index];
+            catch (error) {
+                if (error instanceof error_1.ErrorApi) {
+                    throw error;
+                }
+                throw error_1.ErrorApi.fromMessage('Failed to add booking').withStatus(500);
             }
-            return null;
         });
     }
-    saveToFile() {
-        const filePath = path_1.default.join(__dirname, '../data/bookings.json');
-        fs_1.default.writeFileSync(filePath, JSON.stringify(this.bookings, null, 2), 'utf-8');
+    updateBooking(id, bookingData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const updatedBooking = yield this.model.findByIdAndUpdate(id, bookingData, { new: true }).exec();
+                if (!updatedBooking) {
+                    throw error_1.ErrorApi.fromMessage('Booking not found').withStatus(404);
+                }
+                return updatedBooking;
+            }
+            catch (error) {
+                throw error_1.ErrorApi.fromMessage('Failed to update booking').withStatus(500);
+            }
+        });
+    }
+    deleteBooking(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const deletedBooking = yield this.model.findByIdAndDelete(id).exec();
+                if (!deletedBooking) {
+                    throw error_1.ErrorApi.fromMessage('Booking not found').withStatus(404);
+                }
+                return deletedBooking;
+            }
+            catch (error) {
+                throw error_1.ErrorApi.fromMessage('Failed to delete booking').withStatus(500);
+            }
+        });
+    }
+    getBookingById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const booking = yield this.model.findById(id).exec();
+                if (!booking) {
+                    throw error_1.ErrorApi.fromMessage('Booking not found').withStatus(404);
+                }
+                return booking;
+            }
+            catch (error) {
+                throw error_1.ErrorApi.fromMessage('Failed to get booking').withStatus(500);
+            }
+        });
+    }
+    getAllBookings() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const bookings = yield this.model.find().exec();
+                return bookings;
+            }
+            catch (error) {
+                throw error_1.ErrorApi.fromMessage('Failed to get bookings').withStatus(500);
+            }
+        });
     }
 }
 exports.BookingService = BookingService;
