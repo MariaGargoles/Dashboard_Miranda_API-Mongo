@@ -19,7 +19,7 @@ loginController.post('/login', async (req: Request, res: Response, next: NextFun
     const checked = await checkUser(email, password);
 
     if (checked) {
-        const token = jwt.sign({ email }, process.env.TOKEN_SECRET || 'secretKey');
+        const token = jwt.sign({ email }, process.env.TOKEN_SECRET || 'secrectKey');
         userChecked.password = password;
         res.json({ Token: token, User: userChecked });
     } else {

@@ -19,11 +19,11 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 exports.loginController = express_1.default.Router();
 let userChecked = { email: null, password: null, name: null, photo: null };
-exports.loginController.post('/', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+exports.loginController.post('/login', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     const checked = yield checkUser(email, password);
     if (checked) {
-        const token = jsonwebtoken_1.default.sign({ email }, process.env.TOKEN_SECRET || 'secretKey');
+        const token = jsonwebtoken_1.default.sign({ email }, process.env.TOKEN_SECRET || 'secrectKey');
         userChecked.password = password;
         res.json({ Token: token, User: userChecked });
     }

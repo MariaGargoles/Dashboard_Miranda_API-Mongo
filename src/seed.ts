@@ -89,7 +89,7 @@ for (let i = 0; i < NumRooms; i++) {
     }
 
     //Personal user
-    const myPassword = 'miranda';
+    const myPassword = 'Cr3p3s_19';
     const myHashedPassword = await bcrypt.hash(myPassword, 10);
     const personalUser: User = {
         name: 'Maria Gargoles',

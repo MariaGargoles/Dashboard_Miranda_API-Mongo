@@ -12,18 +12,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.connectDB = connectDB;
+exports.connectDB = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
-const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config();
-function connectDB() {
-    return __awaiter(this, void 0, void 0, function* () {
-        mongoose_1.default.connection.on('connected', () => {
-            console.log('Mongoose successfully connected to the database');
-        });
-        mongoose_1.default.connection.on('error', (error) => {
-            console.log('Error connecting Mongoose to the database', error);
-        });
-        yield mongoose_1.default.connect(process.env.MONGO_KEY);
-    });
-}
+const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const uri = process.env.MONGODB_URI;
+        if (!uri) {
+            throw new Error('Falta la variable MONGODB_URI en el archivo .env');
+        }
+        yield mongoose_1.default.connect(uri);
+        console.log('MongoDB conectado exitosamente');
+    }
+    catch (error) {
+        console.error('Error al conectar con MongoDB:', error);
+        process.exit(1);
+    }
+});
+exports.connectDB = connectDB;

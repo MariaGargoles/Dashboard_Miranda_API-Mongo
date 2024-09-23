@@ -84,7 +84,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const NewUser = yield userService.add(DataUser);
         CreatedUser.push(NewUser);
     }
-    const myPassword = 'miranda';
+    //Personal user
+    const myPassword = 'Cr3p3s_19';
     const myHashedPassword = yield bcryptjs_1.default.hash(myPassword, 10);
     const personalUser = {
         name: 'Maria Gargoles',
