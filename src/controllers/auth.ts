@@ -14,7 +14,7 @@ interface userData {
 
 let userChecked: userData = {email: null, password: null, name: null, photo: null};
 
-loginController.post('/', async (req: Request, res: Response, next: NextFunction) => {
+loginController.post('/login', async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body;
     const checked = await checkUser(email, password);
 
