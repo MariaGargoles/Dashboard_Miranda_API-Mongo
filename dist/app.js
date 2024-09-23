@@ -16,7 +16,7 @@ const mongodb_1 = require("./mongodb");
 const app = (0, express_1.default)();
 exports.App = app;
 app.use(body_parser_1.default.json());
-app.post('/login', auth_1.login);
+app.post('/login', auth_1.loginController);
 app.use('/rooms', rooms_1.default);
 app.use('/users', users_1.default);
 app.use('/booking', booking_1.default);
