@@ -1,17 +1,22 @@
-import { Request, Response, NextFunction } from "express";
-import jwt from 'jsonwebtoken';
-import { ErrorApi } from "../utils/error";
+import bcrypt from 'bcryptjs';
+import { UserModel } from '../models/uniqueuser';
+import { generateAccessToken } from '../utils/auth';
 
-export function authTokenMiddleware(req: Request, res: Response, next: NextFunction): void {
-    const token = req.header('Authorization')?.split(' ')[1];
-    if (!token) {
-        res.sendStatus(401);
-        return;
-    }
-    try {
-        jwt.verify(token, process.env.TOKEN_SECRET!);
-            next();
-    } catch(error) {
-        next(ErrorApi);
+export class LoginService {
+    static async authenticateUser(email: string, password: string): Promise<string> {
+        const user = await UserModel.findOne({ email: email });
+
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        const passwordMatch = await bcrypt.compare(password, user.password);
+
+        if (passwordMatch) {
+            const token = generateAccessToken(user.email);
+            return token;
+        } else {
+            throw new Error('Invalid credentials');
+        }
     }
 }
