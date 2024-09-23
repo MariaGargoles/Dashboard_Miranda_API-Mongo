@@ -73,13 +73,13 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const DataUser = {
             name: faker_1.faker.person.fullName(),
             email: faker_1.faker.internet.email(),
-            foto: faker_1.faker.image.url(),
+            photo: faker_1.faker.image.url(),
             startDate: faker_1.faker.date.past(),
             description: faker_1.faker.lorem.sentence(),
             contact: faker_1.faker.phone.number(),
             status: "ACTIVE",
             password: passwordHashed,
-            id: 0
+            id: 0,
         };
         const NewUser = yield userService.add(DataUser);
         CreatedUser.push(NewUser);
@@ -89,7 +89,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     const personalUser = {
         name: 'Maria Gargoles',
         email: 'segwanda12@gmail.com',
-        foto: faker_1.faker.image.url(),
+        photo: faker_1.faker.image.url(),
         description: faker_1.faker.lorem.sentence(),
         startDate: faker_1.faker.date.past(),
         status: "ACTIVE",

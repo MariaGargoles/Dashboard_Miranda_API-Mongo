@@ -75,25 +75,26 @@ for (let i = 0; i < NumRooms; i++) {
         const DataUser: User = {
             name: faker.person.fullName(),
             email: faker.internet.email(),
-            foto: faker.image.url(),
+            photo: faker.image.url(),
             startDate: faker.date.past(),
             description: faker.lorem.sentence(),
             contact: faker.phone.number(),
             status: "ACTIVE",
             password: passwordHashed,
-            id: 0
+            id: 0,
         };
 
         const NewUser = await userService.add(DataUser);
         CreatedUser.push(NewUser);
     }
 
+    //Personal user
     const myPassword = 'miranda';
     const myHashedPassword = await bcrypt.hash(myPassword, 10);
     const personalUser: User = {
         name: 'Maria Gargoles',
         email: 'segwanda12@gmail.com',
-        foto: faker.image.url(),
+        photo: faker.image.url(),
         description: faker.lorem.sentence(),
         startDate: faker.date.past(),
         status: "ACTIVE",

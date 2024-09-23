@@ -14,23 +14,38 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginController = void 0;
 const express_1 = __importDefault(require("express"));
-const login_1 = require("../services/login");
+const user_1 = require("../models/user");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 exports.loginController = express_1.default.Router();
-exports.loginController.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+let userChecked = { email: null, password: null, name: null, photo: null };
+exports.loginController.post('/', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
-    if (!email || !password) {
-        return res.status(400).json({ error: 'Email and password are required' });
+    const checked = yield checkUser(email, password);
+    if (checked) {
+        const token = jsonwebtoken_1.default.sign({ email }, process.env.TOKEN_SECRET || 'secretKey');
+        userChecked.password = password;
+        res.json({ Token: token, User: userChecked });
     }
-    try {
-        const token = yield login_1.LoginService.authenticateUser(email, password);
-        return res.json({ token });
-    }
-    catch (error) {
-        if (error instanceof Error) {
-            return res.status(401).json({ error: error.message });
-        }
-        else {
-            return res.status(500).json({ error: 'An unexpected error occurred' });
-        }
+    else {
+        const error = new Error('Invalid Credentials');
+        next(error);
     }
 }));
+function checkUser(email, password) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const user = yield user_1.UserModel.findOne({ email: email }).exec();
+            if (user) {
+                userChecked = { email: user.email, password: user.password, name: user.name, photo: user.photo };
+                return yield bcryptjs_1.default.compare(password, user.password);
+            }
+            else {
+                return false;
+            }
+        }
+        catch (error) {
+            throw new Error('Error fetching user');
+        }
+    });
+}

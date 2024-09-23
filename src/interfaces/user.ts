@@ -4,7 +4,7 @@ import { Identifiable } from "./id";
 export interface User extends Identifiable {
     
     name: string;
-    foto: string;
+    photo: string;
     startDate: Date;
     description: string;
     email: string;

@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { UserModel } from '../models/uniqueuser';
+import { UserModel } from '../models/user';
 import { generateAccessToken } from '../utils/auth';
 
 export class LoginService {

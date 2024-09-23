@@ -6,5 +6,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateAccessToken = generateAccessToken;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 function generateAccessToken(username) {
-    return jsonwebtoken_1.default.sign({ name: username }, process.env.TOKEN_SECRET, { expiresIn: '5000000' });
+    return jsonwebtoken_1.default.sign({ name: username }, process.env.TOKEN_SECRET, { expiresIn: '10y' });
 }
