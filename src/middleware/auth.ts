@@ -1,22 +1,17 @@
-import bcrypt from 'bcryptjs';
-import { UserModel } from '../models/user';
-import { generateAccessToken } from '../utils/auth';
+import { Request, Response, NextFunction } from "express";
+import jwt from 'jsonwebtoken';
+import { ErrorApi } from "../utils/error";
 
-export class LoginService {
-    static async authenticateUser(email: string, password: string): Promise<string> {
-        const user = await UserModel.findOne({ email: email });
-
-        if (!user) {
-            throw new Error('User not found');
+export function authTokenMiddleware(req: Request, res: Response, next: NextFunction): void {
+        const token = req.header('authorization')?.split(' ')[1];
+        if (!token) {
+            res.sendStatus(401);
+            return;
         }
-
-        const passwordMatch = await bcrypt.compare(password, user.password);
-
-        if (passwordMatch) {
-            const token = generateAccessToken(user.email);
-            return token;
-        } else {
-            throw new Error('Invalid credentials');
+        try {
+            jwt.verify(token, process.env.TOKEN_SECRET!);
+                next();
+        } catch(error) {
+            next(ErrorApi);
         }
-    }
 }
