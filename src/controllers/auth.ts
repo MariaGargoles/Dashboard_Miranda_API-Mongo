@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { UserModel, User } from '../models/user';
+import { UserModel } from '../models/user';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
@@ -16,28 +16,26 @@ let userChecked: userData = {email: null, password: null, name: null, photo: nul
 
 loginController.post('/login', async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body;
-    const checked = await checkUser(email, password);
+    try {
+        
+        const user = await UserModel.findOne({ email: new RegExp('^' + email + '$', 'i') }).exec();
 
-    if (checked) {
-        const token = jwt.sign({ email }, process.env.TOKEN_SECRET || 'secrectKey');
-        userChecked.password = password;
-        res.json({ Token: token, User: userChecked });
-    } else {
-        const error = new Error('Invalid Credentials');
-        next(error);
+        if (!user) {
+            return res.status(401).json({ error: "Invalid email" });  
+        }
+
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordCorrect) {
+            return res.status(401).json({ error: "Invalid password" });  
+        }
+
+        
+        const token = jwt.sign({ email }, process.env.TOKEN_SECRET || 'secretKey');
+        userChecked = { email: user.email, password: null, name: user.name, photo: user.photo };
+        return res.json({ Token: token, User: userChecked });
+
+    } catch (error) {
+        return next(new Error('Error during login process'));
     }
 });
-
-async function checkUser(email: string, password: string): Promise<boolean> {
-    try {
-        const user = await UserModel.findOne({ email: email }).exec() as User;
-        if (user) {
-            userChecked = { email: user.email, password: user.password, name: user.name, photo: user.photo };
-            return await bcrypt.compare(password, user.password);
-        } else {
-            return false;
-        }
-    } catch (error) {
-        throw new Error('Error fetching user');
-    }
-}
