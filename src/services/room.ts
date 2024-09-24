@@ -4,6 +4,9 @@ import { ErrorApi } from "../utils/error";
 import { ServicesGeneric } from "../utils/services";
 
 export class RoomService extends ServicesGeneric<Room> {
+    getRandomRoom(): any {
+        throw new Error('Method not implemented.');
+    }
     constructor() {
         super(RoomModel);
     }

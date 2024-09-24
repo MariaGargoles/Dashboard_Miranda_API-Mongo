@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.app = void 0;
 const express_1 = __importDefault(require("express"));
-const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const path_1 = __importDefault(require("path"));
 const mustache_express_1 = __importDefault(require("mustache-express"));
@@ -44,7 +43,7 @@ function startServer() {
 }
 startServer();
 app.use((0, cors_1.default)());
-app.use(body_parser_1.default.json());
+app.use(express_1.default.json());
 app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
 app.set('views', path_1.default.join(__dirname, 'views'));
 app.set('view engine', 'mustache');

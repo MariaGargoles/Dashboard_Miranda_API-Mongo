@@ -16,12 +16,15 @@ let userChecked: userData = {email: null, password: null, name: null, photo: nul
 
 loginController.post('/login', async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body;
+    console.log(email)
     try {
         
         const user = await UserModel.findOne({ email: new RegExp('^' + email + '$', 'i') }).exec();
 
         if (!user) {
+            console.log(email)
             return res.status(401).json({ error: "Invalid email" });  
+            
         }
 
         const isPasswordCorrect = await bcrypt.compare(password, user.password);

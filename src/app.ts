@@ -1,5 +1,4 @@
 import express, { Application, Response, Request, NextFunction } from 'express';
-import bodyParser from 'body-parser';
 import cors from 'cors';
 import path from 'path';
 import mustacheExpress from 'mustache-express';
@@ -11,15 +10,12 @@ import { ContactRouter } from './controllers/contactmessages';
 import { connectDB } from './mongodb';
 import { ErrorApi } from './utils/error';
 import { authTokenMiddleware } from './middleware/auth';
-
-
-
 import dotenv from 'dotenv';
+
 dotenv.config();
 
 const app: Application = express();
 const port = process.env.PORT || 3001;
-
 
 async function startServer() {
     try {
@@ -33,14 +29,12 @@ async function startServer() {
 
 startServer();
 
-
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json()); 
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'mustache');
 app.engine('mustache', mustacheExpress());
-
 
 app.post('/login', loginController);
 app.use('/rooms', authTokenMiddleware, roomRouter);
@@ -48,11 +42,9 @@ app.use('/users', authTokenMiddleware, userRouter);
 app.use('/booking', authTokenMiddleware, bookingRouter);
 app.use('/contact', authTokenMiddleware, ContactRouter);
 
-
 app.get('/', (_req: Request, res: Response) => {
     res.render('index');
 });
-
 
 app.use((error: ErrorApi, _req: Request, res: Response, _next: NextFunction) => {
     console.error(error);
@@ -60,7 +52,6 @@ app.use((error: ErrorApi, _req: Request, res: Response, _next: NextFunction) => 
         message: error.safe ? error.message : 'Error in the application',
     });
 });
-
 
 app.listen(port, () => {
     console.log(`Server listening on http://localhost:${port}`);

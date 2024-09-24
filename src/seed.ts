@@ -10,6 +10,9 @@ import { ContactMessagesService } from './services/contactmessages';
 import { Booking } from './interfaces/booking';
 import { BookingService } from './services/booking';
 import bcrypt from 'bcryptjs';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const NumBookings = 50;
 const NumContacts = 15;
@@ -89,7 +92,7 @@ for (let i = 0; i < NumRooms; i++) {
     }
 
     //Personal user
-    const myPassword = 'Cr3p3s_19';
+    const myPassword = 'miranda';
     const myHashedPassword = await bcrypt.hash(myPassword, 10);
     const personalUser: User = {
         name: 'Maria Gargoles',
