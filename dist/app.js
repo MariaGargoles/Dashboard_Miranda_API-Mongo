@@ -42,7 +42,21 @@ function startServer() {
     });
 }
 startServer();
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({
+    origin: 'http://localhost:3000', // Cambiar por el localhost de front
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+//manejar las peticiones 
+app.use((req, res, next) => {
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(204);
+    }
+    else {
+        next();
+    }
+});
 app.use(express_1.default.json());
 app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
 app.set('views', path_1.default.join(__dirname, 'views'));

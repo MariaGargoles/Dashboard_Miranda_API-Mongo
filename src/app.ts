@@ -29,7 +29,24 @@ async function startServer() {
 
 startServer();
 
-app.use(cors());
+
+app.use(cors({
+    origin: 'http://localhost:3000', // Cambiar por el localhost de front
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+//manejar las peticiones 
+app.use((req: Request, res: Response, next: NextFunction) => {
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(204); 
+    } else {
+        next();
+    }
+});
+
+
 app.use(express.json()); 
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));

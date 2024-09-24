@@ -14,6 +14,9 @@ const room_1 = require("../models/room");
 const error_1 = require("../utils/error");
 const services_1 = require("../utils/services");
 class RoomService extends services_1.ServicesGeneric {
+    getRandomRoom() {
+        throw new Error('Method not implemented.');
+    }
     constructor() {
         super(room_1.RoomModel);
     }

@@ -20,6 +20,8 @@ const users_1 = require("./services/users");
 const contactmessages_1 = require("./services/contactmessages");
 const booking_1 = require("./services/booking");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 const NumBookings = 50;
 const NumContacts = 15;
 const NumRooms = 50;
