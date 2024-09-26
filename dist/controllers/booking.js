@@ -1,15 +1,14 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.bookingRouter = void 0;
-const express_1 = __importDefault(require("express"));
+const express_1 = require("express");
 const booking_1 = require("../services/booking");
-exports.bookingRouter = express_1.default.Router();
-exports.bookingRouter.get('/', booking_1.BookingService.getAll);
-exports.bookingRouter.get('/:id', booking_1.BookingService.getId);
-exports.bookingRouter.post('/', booking_1.BookingService.post);
-exports.bookingRouter.delete('/:id', booking_1.BookingService.deleteID);
-exports.bookingRouter.patch('/:id', booking_1.BookingService.put);
-exports.default = exports.bookingRouter;
+const controller_1 = require("../utils/controller");
+const bookingRouter = (0, express_1.Router)();
+const bookingService = new booking_1.BookingService();
+const { getAll, getId, post, deleteID, update } = (0, controller_1.ControllersGeneric)(bookingService);
+bookingRouter.get('/', getAll);
+bookingRouter.get('/:id', getId);
+bookingRouter.post('/', post);
+bookingRouter.delete('/:id', deleteID);
+bookingRouter.patch('/:id', update);
+exports.default = bookingRouter;

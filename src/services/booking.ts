@@ -4,24 +4,6 @@ import { ErrorApi } from "../utils/error";
 import { ServicesGeneric } from "../utils/services";
 
 export class BookingService extends ServicesGeneric<Booking> {
-    static put(_arg0: string, _put: any) {
-        throw new Error("Method not implemented.");
-    }
-    static deleteID(_arg0: string, _deleteID: any) {
-        throw new Error("Method not implemented.");
-    }
-    static post(_arg0: string, _post: any) {
-        throw new Error("Method not implemented.");
-    }
-    static getId(_arg0: string, _getId: any) {
-        throw new Error("Method not implemented.");
-    }
-    static getAll(_arg0: string, _getAll: any) {
-        throw new Error("Method not implemented.");
-    }
-    post() {
-        throw new Error('Method not implemented.');
-    }
     constructor() {
         super(BookingModel);
     }

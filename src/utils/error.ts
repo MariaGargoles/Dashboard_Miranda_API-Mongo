@@ -1,14 +1,12 @@
 export class ErrorApi extends Error {
-    withStatus(_arg0: number) {
-        throw new Error("Method not implemented.");
-    }
-    status: number;
-    safe: boolean;
+    public status: number;
+    public safe: boolean;
 
     constructor(message: string, status: number = 500, safe: boolean = false) {
         super(message);
         this.status = status;
         this.safe = safe;
+        this.name = 'ErrorApi'; 
     }
 
     static fromMessage(message: string): ErrorApi {
@@ -21,5 +19,10 @@ export class ErrorApi extends Error {
 
     static fromSafe(message: string, safe: boolean): ErrorApi {
         return new ErrorApi(message, 500, safe);
+    }
+
+    withStatus(status: number): this {
+        this.status = status; 
+        return this; 
     }
 }

@@ -43,7 +43,7 @@ function startServer() {
 }
 startServer();
 app.use((0, cors_1.default)({
-    origin: 'http://localhost:3000', // Cambiar por el localhost de front
+    origin: 'http://localhost:5173', // Cambiar por el localhost de front
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']

@@ -14,24 +14,6 @@ const booking_1 = require("../models/booking");
 const error_1 = require("../utils/error");
 const services_1 = require("../utils/services");
 class BookingService extends services_1.ServicesGeneric {
-    static put(_arg0, _put) {
-        throw new Error("Method not implemented.");
-    }
-    static deleteID(_arg0, _deleteID) {
-        throw new Error("Method not implemented.");
-    }
-    static post(_arg0, _post) {
-        throw new Error("Method not implemented.");
-    }
-    static getId(_arg0, _getId) {
-        throw new Error("Method not implemented.");
-    }
-    static getAll(_arg0, _getAll) {
-        throw new Error("Method not implemented.");
-    }
-    post() {
-        throw new Error('Method not implemented.');
-    }
     constructor() {
         super(booking_1.BookingModel);
     }
