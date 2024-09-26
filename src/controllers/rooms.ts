@@ -1,18 +1,16 @@
-import { Router } from 'express';
-import { ContactMessagesService } from '../services/contactmessages';
+import { RoomService } from '../services/room';
 import { ControllersGeneric } from '../utils/controller';
+import Express from "express";
 
+const roomHandler = new RoomService();
 
-const contactRouter = Router();
-const contactMessagesService = new ContactMessagesService();  
-const { getAll, getId, post, deleteID, update } = ControllersGeneric(contactMessagesService); 
+const roomRouter = Express.Router();
+const { getAll, getId, post, deleteID, update } = ControllersGeneric(roomHandler);
 
+roomRouter.get('/', getAll);
+roomRouter.get('/:id', getId);
+roomRouter.post('/', post);
+roomRouter.delete('/:id', deleteID);
+roomRouter.patch('/:id', update);
 
-
-contactRouter.get('/', getAll);  
-contactRouter.get('/:id', getId);  
-contactRouter.post('/', post);  
-contactRouter.delete('/:id', deleteID);  
-contactRouter.patch('/:id', update);  
-
-export default contactRouter;
+export default roomRouter;

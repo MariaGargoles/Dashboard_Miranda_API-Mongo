@@ -1,14 +1,14 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ContactRouter = void 0;
-const express_1 = __importDefault(require("express"));
+const express_1 = require("express");
 const contactmessages_1 = require("../services/contactmessages");
-exports.ContactRouter = express_1.default.Router();
-exports.ContactRouter.get('/', contactmessages_1.ContactMessagesService.getAll);
-exports.ContactRouter.get('/:id', contactmessages_1.ContactMessagesService.getId);
-exports.ContactRouter.post('/', contactmessages_1.ContactMessagesService.post);
-exports.ContactRouter.delete('/:id', contactmessages_1.ContactMessagesService.deleteID);
-exports.ContactRouter.put('/:id', contactmessages_1.ContactMessagesService.put);
+const controller_1 = require("../utils/controller");
+const contactRouter = (0, express_1.Router)();
+const contactMessagesService = new contactmessages_1.ContactMessagesService();
+const { getAll, getId, post, deleteID, update } = (0, controller_1.ControllersGeneric)(contactMessagesService);
+contactRouter.get('/', getAll);
+contactRouter.get('/:id', getId);
+contactRouter.post('/', post);
+contactRouter.delete('/:id', deleteID);
+contactRouter.patch('/:id', update);
+exports.default = contactRouter;

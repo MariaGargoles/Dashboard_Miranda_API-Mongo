@@ -6,7 +6,7 @@ import { loginController } from './controllers/auth';
 import roomRouter from './controllers/rooms';  
 import userRouter from './controllers/users';
 import bookingRouter from './controllers/booking';
-import { ContactRouter } from './controllers/contactmessages'; 
+import contactRouter  from './controllers/contactmessages'; 
 import { connectDB } from './mongodb';
 import { ErrorApi } from './utils/error';
 import { authTokenMiddleware } from './middleware/auth';
@@ -57,7 +57,7 @@ app.post('/login', loginController);
 app.use('/rooms', authTokenMiddleware, roomRouter);
 app.use('/users', authTokenMiddleware, userRouter);
 app.use('/booking', authTokenMiddleware, bookingRouter);
-app.use('/contact', authTokenMiddleware, ContactRouter);
+app.use('/contact', authTokenMiddleware, contactRouter);
 
 app.get('/', (_req: Request, res: Response) => {
     res.render('index');

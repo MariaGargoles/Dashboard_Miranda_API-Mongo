@@ -21,7 +21,7 @@ const auth_1 = require("./controllers/auth");
 const rooms_1 = __importDefault(require("./controllers/rooms"));
 const users_1 = __importDefault(require("./controllers/users"));
 const booking_1 = __importDefault(require("./controllers/booking"));
-const contactmessages_1 = require("./controllers/contactmessages");
+const contactmessages_1 = __importDefault(require("./controllers/contactmessages"));
 const mongodb_1 = require("./mongodb");
 const auth_2 = require("./middleware/auth");
 const dotenv_1 = __importDefault(require("dotenv"));
@@ -66,7 +66,7 @@ app.post('/login', auth_1.loginController);
 app.use('/rooms', auth_2.authTokenMiddleware, rooms_1.default);
 app.use('/users', auth_2.authTokenMiddleware, users_1.default);
 app.use('/booking', auth_2.authTokenMiddleware, booking_1.default);
-app.use('/contact', auth_2.authTokenMiddleware, contactmessages_1.ContactRouter);
+app.use('/contact', auth_2.authTokenMiddleware, contactmessages_1.default);
 app.get('/', (_req, res) => {
     res.render('index');
 });

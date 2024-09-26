@@ -1,13 +1,15 @@
-import Express from "express";
-import { ContactMessagesService } from "../services/contactmessages";
+import { Router } from 'express';
+import { ContactMessagesService } from '../services/contactmessages';
+import { ControllersGeneric } from '../utils/controller';
 
+const contactRouter = Router();
+const contactMessagesService = new ContactMessagesService();  
+const { getAll, getId, post, deleteID, update } = ControllersGeneric(contactMessagesService);
 
-export const ContactRouter = Express.Router();
+contactRouter.get('/', getAll);  
+contactRouter.get('/:id', getId);  
+contactRouter.post('/', post);  
+contactRouter.delete('/:id', deleteID);  
+contactRouter.patch('/:id', update);  
 
-
-
-ContactRouter.get('/', ContactMessagesService.getAll);
-ContactRouter.get('/:id', ContactMessagesService.getId);
-ContactRouter.post('/', ContactMessagesService.post);
-ContactRouter.delete('/:id', ContactMessagesService.deleteID);
-ContactRouter.put('/:id', ContactMessagesService.put);
+export default contactRouter;

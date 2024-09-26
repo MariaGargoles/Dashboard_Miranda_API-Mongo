@@ -10,25 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ContactMessagesService = void 0;
+const messages_1 = require("../models/messages");
 const error_1 = require("../utils/error");
 const services_1 = require("../utils/services");
-const messages_1 = require("../models/messages");
 class ContactMessagesService extends services_1.ServicesGeneric {
-    static put(_arg0, _put) {
-        throw new Error("Method not implemented.");
-    }
-    static deleteID(_arg0, _deleteID) {
-        throw new Error("Method not implemented.");
-    }
-    static post(_arg0, _post) {
-        throw new Error("Method not implemented.");
-    }
-    static getId(_arg0, _getId) {
-        throw new Error("Method not implemented.");
-    }
-    static getAll(_arg0, _getAll) {
-        throw new Error("Method not implemented.");
-    }
     constructor() {
         super(messages_1.MessageModel);
     }
@@ -40,31 +25,6 @@ class ContactMessagesService extends services_1.ServicesGeneric {
             }
             catch (error) {
                 throw error_1.ErrorApi.fromMessage('Failed to add contact message').withStatus(500);
-            }
-        });
-    }
-    getAllContactMessages() {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const messages = yield this.model.find().exec();
-                return messages;
-            }
-            catch (error) {
-                throw error_1.ErrorApi.fromMessage('Failed to get contact messages').withStatus(500);
-            }
-        });
-    }
-    getContactMessageById(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const message = yield this.model.findById(id).exec();
-                if (!message) {
-                    throw error_1.ErrorApi.fromMessage('Contact message not found').withStatus(404);
-                }
-                return message;
-            }
-            catch (error) {
-                throw error_1.ErrorApi.fromMessage('Failed to get contact message').withStatus(500);
             }
         });
     }
@@ -93,6 +53,31 @@ class ContactMessagesService extends services_1.ServicesGeneric {
             }
             catch (error) {
                 throw error_1.ErrorApi.fromMessage('Failed to delete contact message').withStatus(500);
+            }
+        });
+    }
+    getContactMessageById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const message = yield this.model.findById(id).exec();
+                if (!message) {
+                    throw error_1.ErrorApi.fromMessage('Contact message not found').withStatus(404);
+                }
+                return message;
+            }
+            catch (error) {
+                throw error_1.ErrorApi.fromMessage('Failed to get contact message').withStatus(500);
+            }
+        });
+    }
+    getAllContactMessages() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const messages = yield this.model.find().exec();
+                return messages;
+            }
+            catch (error) {
+                throw error_1.ErrorApi.fromMessage('Failed to get contact messages').withStatus(500);
             }
         });
     }
