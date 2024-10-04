@@ -16,7 +16,6 @@ exports.app = void 0;
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const path_1 = __importDefault(require("path"));
-const mustache_express_1 = __importDefault(require("mustache-express"));
 const auth_1 = require("./controllers/auth");
 const rooms_1 = __importDefault(require("./controllers/rooms"));
 const users_1 = __importDefault(require("./controllers/users"));
@@ -48,7 +47,7 @@ app.use((0, cors_1.default)({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
-//manejar las peticiones 
+// Manejar las peticiones 
 app.use((req, res, next) => {
     if (req.method === 'OPTIONS') {
         res.sendStatus(204);
@@ -59,23 +58,20 @@ app.use((req, res, next) => {
 });
 app.use(express_1.default.json());
 app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
-app.set('views', path_1.default.join(__dirname, 'views'));
-app.set('view engine', 'mustache');
-app.engine('mustache', (0, mustache_express_1.default)());
+// Rutas de la API
 app.post('/login', auth_1.loginController);
 app.use('/rooms', auth_2.authTokenMiddleware, rooms_1.default);
 app.use('/users', auth_2.authTokenMiddleware, users_1.default);
 app.use('/booking', auth_2.authTokenMiddleware, booking_1.default);
 app.use('/contact', auth_2.authTokenMiddleware, contactmessages_1.default);
-app.get('/', (_req, res) => {
-    res.render('index');
-});
+// Manejo de errores
 app.use((error, _req, res, _next) => {
     console.error(error);
     res.status(error.status || 500).json({
         message: error.safe ? error.message : 'Error in the application',
     });
 });
+// Iniciar el servidor
 app.listen(port, () => {
     console.log(`Server listening on http://localhost:${port}`);
 });
