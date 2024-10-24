@@ -95,8 +95,7 @@ for (let i = 0; i < NumRooms; i++) {
     //Personal user
     async function seedUser() {
       const myPassword = 'miranda';
-      const myHashedPassword = await bcrypt.hash(myPassword, 10);  // Encriptar la contraseña
-  
+      const myHashedPassword = await bcrypt.hash(myPassword, 10);  
       const personalUser = new UserModel({
           name: 'Maria',
           email: 'segwanda12@gmail.com',
@@ -104,12 +103,12 @@ for (let i = 0; i < NumRooms; i++) {
           description: faker.lorem.sentence(),
           startDate: faker.date.past(),
           status: "ACTIVE",
-          password: myHashedPassword,  // Guardar la contraseña encriptada
+          password: myHashedPassword,  
           contact: faker.phone.number(),
       });
   
       try {
-          await personalUser.save();  // Guardar el usuario en la base de datos
+          await personalUser.save();  
           console.log('Usuario creado exitosamente');
       } catch (error) {
           console.error('Error al crear el usuario:', error);
@@ -128,10 +127,10 @@ for (let i = 0; i < NumRooms; i++) {
         const checkOutDate: Date = new Date(checkInDate);
         checkOutDate.setDate(checkInDate.getDate() + faker.number.int({ min: 2, max: 20 }));
         const room: any = CreatedRoom[Math.floor(Math.random() * CreatedRoom.length)];
-        const roomId: string = room._id.toString(); 
+        const roomId = room._id;
         const roomType: string = room.bedType; 
         const roomNumber: number = parseInt(room.number); 
-    
+      
         const DataBooking: Booking = {
             id: faker.number.int(), 
             roomId: roomId,

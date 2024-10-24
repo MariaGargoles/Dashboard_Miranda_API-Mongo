@@ -1,7 +1,8 @@
 import { Identifiable } from "../interfaces/id";
+import mongoose from "mongoose";
 
 export interface Booking extends Identifiable {
-    roomId: any;
+    roomId: mongoose.Types.ObjectId;
     Name: string;
     OrderDate: Date;
     CheckIn: Date;
