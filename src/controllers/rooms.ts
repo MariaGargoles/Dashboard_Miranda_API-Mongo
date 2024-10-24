@@ -11,6 +11,6 @@ roomRouter.get('/', getAll);
 roomRouter.get('/:id', getId);
 roomRouter.post('/', post);
 roomRouter.delete('/:id', deleteID);
-roomRouter.patch('/:id', update);
+roomRouter.post('/:id/update', update);  
 
 export default roomRouter;

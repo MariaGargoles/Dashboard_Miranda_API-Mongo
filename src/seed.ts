@@ -56,7 +56,7 @@ for (let i = 0; i < NumRooms; i++) {
         photo: faker.image.url(), 
         number: faker.number.int({ min: 1, max: 100 }).toString(), 
         bedType: faker.helpers.arrayElement(['Single', 'Double', 'Queen', 'King']), 
-        amenities: faker.helpers.arrayElements(amenities, { min: 1, max: 5 }), 
+        amenities: faker.helpers.arrayElements(amenities, { min: 1, max: 5 }),
         rate: faker.number.int({ min: 10, max: 500 }), 
         offerPrice: faker.number.int({ min: 5, max: 400 }), 
         status: Math.random() < 0.5 ? 'Available' : 'Booked', 
