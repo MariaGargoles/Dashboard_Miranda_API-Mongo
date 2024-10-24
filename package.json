@@ -14,7 +14,8 @@
     "serverless-http": "^3.2.0"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "ts-node src/app.ts",
+    "dev": "nodemon src/app.ts",
     "start": "node dist/server.js",
     "deploy": "npm run build && serverless deploy"
   },

@@ -11,6 +11,7 @@ import { Booking } from './interfaces/booking';
 import { BookingService } from './services/booking';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
+import { UserModel } from './models/user';
 
 dotenv.config();
 
@@ -92,23 +93,30 @@ for (let i = 0; i < NumRooms; i++) {
     }
 
     //Personal user
-    const myPassword = 'miranda';
-    const myHashedPassword = await bcrypt.hash(myPassword, 10);
-    const personalUser: User = {
-        name: 'Maria Gargoles',
-        email: 'segwanda12@gmail.com',
-        photo: faker.image.url(),
-        description: faker.lorem.sentence(),
-        startDate: faker.date.past(),
-        status: "ACTIVE",
-        password: myHashedPassword,
-        contact: faker.phone.number(),
-        id: 0
-    };
-
-    const MyUser = await userService.add(personalUser);
-    CreatedUser.push(MyUser);
-
+    async function seedUser() {
+      const myPassword = 'miranda';
+      const myHashedPassword = await bcrypt.hash(myPassword, 10);  // Encriptar la contraseña
+  
+      const personalUser = new UserModel({
+          name: 'Maria',
+          email: 'segwanda12@gmail.com',
+          photo: faker.image.url(),
+          description: faker.lorem.sentence(),
+          startDate: faker.date.past(),
+          status: "ACTIVE",
+          password: myHashedPassword,  // Guardar la contraseña encriptada
+          contact: faker.phone.number(),
+      });
+  
+      try {
+          await personalUser.save();  // Guardar el usuario en la base de datos
+          console.log('Usuario creado exitosamente');
+      } catch (error) {
+          console.error('Error al crear el usuario:', error);
+      }
+  }
+  seedUser();
+  
     // Seeding Bookings
     const CreatedBooking: Booking[] = [];
     const bookingService = new BookingService();
