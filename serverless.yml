@@ -6,7 +6,7 @@ provider:
   runtime: nodejs20.x
   environment:
     TOKEN_SECRET: ${env:TOKEN_SECRET}
-    MONGO_URI: ${env:MONGO_KEY}
+    MONGO_URI: ${env:MONGO_URI}
 
 functions:
   app:
