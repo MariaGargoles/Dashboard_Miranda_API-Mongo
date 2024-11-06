@@ -10,23 +10,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      #Node.js
+      # Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "20"
 
-      
       - name: Install dependencies
         run: |
           npm install
-          npm run build
+          npm install --save-dev ts-node  # Agregar ts-node como dependencia de desarrollo
+          npm run build  # Ejecuta el build (o el script que uses para compilar)
 
-      #AWS
+      # AWS
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -34,12 +33,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-3
 
-      
       - name: Set up environment variables
         run: |
           echo "TOKEN_SECRET=${{ secrets.TOKEN_SECRET }}" >> $GITHUB_ENV
           echo "MONGO_URI=${{ secrets.MONGO_KEY }}" >> $GITHUB_ENV
 
-      #  Serverless
+      # Serverless
       - name: Deploy with Serverless
         run: npx serverless deploy
