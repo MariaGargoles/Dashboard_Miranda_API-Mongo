@@ -14,10 +14,10 @@
     "serverless-http": "^3.2.0"
   },
   "scripts": {
-    "build": "npx ts-node src/app.ts",
-    "dev": "nodemon src/app.ts",
-    "start": "node dist/server.js",
-    "deploy": "npm run build && serverless deploy"
+    "test": "jest",
+    "start": "nodemon",
+    "deploy": "npm run build && serverless deploy",
+    "build": "tsc"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.0.1",
