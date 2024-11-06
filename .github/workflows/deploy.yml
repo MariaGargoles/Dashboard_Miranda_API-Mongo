@@ -1,9 +1,9 @@
-name: Deploy to AWS (Serverless)
+name: Deploy Miranda Backend
 
 on:
   push:
     branches:
-      - main # Cambia si usas una rama diferente
+      - main
 
 jobs:
   deploy:
@@ -11,33 +11,33 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      # Node.js
-      - name: Set up Node.js
+      - name: Install Node.js (Required for Serverless Framework)
         uses: actions/setup-node@v3
         with:
-          node-version: "20"
+          node-version: "20.x"
+
+      - name: Install Serverless Framework v3
+        run: npm install -g serverless@3
 
       - name: Install dependencies
-        run: |
-          npm install
-          npm install --save-dev ts-node  # Agregar ts-node como dependencia de desarrollo
-          npm run build  # Ejecuta el build (o el script que uses para compilar)
+        run: npm install
 
-      # AWS
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Build Vite App
+        run: npm run build
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-3
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Set up environment variables
         run: |
           echo "TOKEN_SECRET=${{ secrets.TOKEN_SECRET }}" >> $GITHUB_ENV
-          echo "MONGO_URI=${{ secrets.MONGO_KEY }}" >> $GITHUB_ENV
+          echo "MONGO_KEY=${{ secrets.MONGO_KEY }}" >> $GITHUB_ENV
 
-      # Serverless
-      - name: Deploy with Serverless
-        run: npx serverless deploy
+      - name: Deploy with Serverless v3
+        run: serverless deploy
