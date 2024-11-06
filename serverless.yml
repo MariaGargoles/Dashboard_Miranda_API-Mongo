@@ -1,30 +1,29 @@
-service: miranda-backend  
+service: miranda-backend
 
 provider:
-  name: aws               
-  region: eu-west-3        
-  runtime: nodejs20.x      
+  name: aws
+  region: eu-west-3
+  runtime: nodejs20.x
   environment:
-    TOKEN_SECRET: ${env:TOKEN_SECRET}  
-    MONGO_URI: ${env:MONGO_URI}
+    TOKEN_SECRET: ${env:TOKEN_SECRET}
+    MONGO_URI: ${env:MONGO_KEY}
 
 functions:
   app:
-    handler: dist/lambda.handler  
+    handler: dist/lambda.handler
     events:
       - http:
-          path: /                 
-          method: ANY             
-          cors: true               
+          path: /
+          method: ANY
+          cors: true
       - http:
-          path: /{proxy+}           
+          path: /{proxy+}
           method: ANY
           cors: true
 
 package:
   patterns:
-    - "!./**"                   
+    - "!./**"
     - "package.json"
     - "node_modules/**"
     - "dist/**"
-
