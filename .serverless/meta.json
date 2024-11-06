@@ -53,12 +53,10 @@
     "command": [
       "deploy"
     ],
-    "options": {
-      "debug": "*"
-    },
+    "options": {},
     "error": {
       "message": "Cannot resolve '${env:MONGO_URI}' variable at 'provider.environment.MONGO_URI'. No value is available for this variable, and no default value was provided. Please check your variable definitions or provide a default value.",
-      "stack": "Error: Cannot resolve '${env:MONGO_URI}' variable at 'provider.environment.MONGO_URI'. No value is available for this variable, and no default value was provided. Please check your variable definitions or provide a default value.\n    at _ResolverManager.resolve (C:\\Users\\maria\\.serverless\\releases\\4.4.7\\sf-core\\src\\lib\\resolvers\\manager.js:673:11)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at _ResolverManager.#handlePlaceholderNode (C:\\Users\\maria\\.serverless\\releases\\4.4.7\\sf-core\\src\\lib\\resolvers\\manager.js:590:9)\n    at <anonymous> (C:\\Users\\maria\\.serverless\\releases\\4.4.7\\sf-core\\src\\lib\\resolvers\\manager.js:483:11)\n    at processNodeAndHandleCompletion (C:\\Users\\maria\\.serverless\\releases\\4.4.7\\sf-core\\src\\lib\\resolvers\\graph.js:20:5)",
+      "stack": "Error: Cannot resolve '${env:MONGO_URI}' variable at 'provider.environment.MONGO_URI'. No value is available for this variable, and no default value was provided. Please check your variable definitions or provide a default value.\n    at _ResolverManager.resolve (file:///C:/Users/maria/.serverless/releases/4.4.7/package/dist/sf-core.js:693:56026)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async #handlePlaceholderNode (file:///C:/Users/maria/.serverless/releases/4.4.7/package/dist/sf-core.js:693:54456)\n    at async file:///C:/Users/maria/.serverless/releases/4.4.7/package/dist/sf-core.js:693:52448\n    at async processNodeAndHandleCompletion (file:///C:/Users/maria/.serverless/releases/4.4.7/package/dist/sf-core.js:693:43090)",
       "code": "MISSING_VARIABLE_RESULT"
     },
     "machineId": "7445057af6ee254f979d0168a1987247",
