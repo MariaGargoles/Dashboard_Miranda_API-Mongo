@@ -32,11 +32,12 @@ startServer();
 
 
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: 'http://dashboard-miranda-mgl.s3-website.eu-west-3.amazonaws.com',
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 
 //manejar las peticiones 
 app.use((req: Request, res: Response, next: NextFunction) => {
