@@ -28,7 +28,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 exports.app = app;
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3002;
 function startServer() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -43,7 +43,7 @@ function startServer() {
 }
 startServer();
 app.use((0, cors_1.default)({
-    origin: 'http://localhost:5173', // Cambiar por el localhost de front
+    origin: 'http://dashboard-miranda-mgl.s3-website.eu-west-3.amazonaws.com',
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
@@ -51,11 +51,13 @@ app.use((0, cors_1.default)({
 //manejar las peticiones 
 app.use((req, res, next) => {
     if (req.method === 'OPTIONS') {
+        res.header('Access-Control-Allow-Origin', 'http://dashboard-miranda-mgl.s3-website.eu-west-3.amazonaws.com');
+        res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         res.sendStatus(204);
+        return;
     }
-    else {
-        next();
-    }
+    next();
 });
 app.use(express_1.default.json());
 app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));

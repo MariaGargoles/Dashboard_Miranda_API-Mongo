@@ -21,6 +21,7 @@ const contactmessages_1 = require("./services/contactmessages");
 const booking_1 = require("./services/booking");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const user_1 = require("./models/user");
 dotenv_1.default.config();
 const NumBookings = 50;
 const NumContacts = 15;
@@ -87,21 +88,30 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         CreatedUser.push(NewUser);
     }
     //Personal user
-    const myPassword = 'miranda';
-    const myHashedPassword = yield bcryptjs_1.default.hash(myPassword, 10);
-    const personalUser = {
-        name: 'Maria Gargoles',
-        email: 'segwanda12@gmail.com',
-        photo: faker_1.faker.image.url(),
-        description: faker_1.faker.lorem.sentence(),
-        startDate: faker_1.faker.date.past(),
-        status: "ACTIVE",
-        password: myHashedPassword,
-        contact: faker_1.faker.phone.number(),
-        id: 0
-    };
-    const MyUser = yield userService.add(personalUser);
-    CreatedUser.push(MyUser);
+    function seedUser() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const myPassword = 'miranda';
+            const myHashedPassword = yield bcryptjs_1.default.hash(myPassword, 10);
+            const personalUser = new user_1.UserModel({
+                name: 'Maria',
+                email: 'segwanda12@gmail.com',
+                photo: faker_1.faker.image.url(),
+                description: faker_1.faker.lorem.sentence(),
+                startDate: faker_1.faker.date.past(),
+                status: "ACTIVE",
+                password: myHashedPassword,
+                contact: faker_1.faker.phone.number(),
+            });
+            try {
+                yield personalUser.save();
+                console.log('Usuario creado exitosamente');
+            }
+            catch (error) {
+                console.error('Error al crear el usuario:', error);
+            }
+        });
+    }
+    seedUser();
     // Seeding Bookings
     const CreatedBooking = [];
     const bookingService = new booking_1.BookingService();
@@ -112,7 +122,7 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
         const checkOutDate = new Date(checkInDate);
         checkOutDate.setDate(checkInDate.getDate() + faker_1.faker.number.int({ min: 2, max: 20 }));
         const room = CreatedRoom[Math.floor(Math.random() * CreatedRoom.length)];
-        const roomId = room._id.toString();
+        const roomId = room._id;
         const roomType = room.bedType;
         const roomNumber = parseInt(room.number);
         const DataBooking = {

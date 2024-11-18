@@ -18,25 +18,28 @@ const user_1 = require("../models/user");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 exports.loginController = express_1.default.Router();
-let userChecked = { email: null, password: null, name: null, photo: null };
-exports.loginController.post('/login', (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+// Endpoint POST /login
+exports.loginController.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
-    console.log(email);
     try {
-        const user = yield user_1.UserModel.findOne({ email: new RegExp('^' + email + '$', 'i') }).exec();
+        const user = yield user_1.UserModel.findOne({ email: new RegExp(`^${email}$`, 'i') }).exec();
         if (!user) {
-            console.log(email);
-            return res.status(401).json({ error: "Invalid email" });
+            return res.status(401).json({ error: 'Invalid email or password' });
         }
         const isPasswordCorrect = yield bcryptjs_1.default.compare(password, user.password);
         if (!isPasswordCorrect) {
-            return res.status(401).json({ error: "Invalid password" });
+            return res.status(401).json({ error: 'Invalid email or password' });
         }
-        const token = jsonwebtoken_1.default.sign({ email }, process.env.TOKEN_SECRET || 'secretKey');
-        userChecked = { email: user.email, password: null, name: user.name, photo: user.photo };
-        return res.json({ Token: token, User: userChecked });
+        const token = jsonwebtoken_1.default.sign({ email: user.email, userId: user._id }, process.env.TOKEN_SECRET || 'secretKey', { expiresIn: '1h' });
+        const userChecked = {
+            email: user.email,
+            name: user.name,
+            photo: user.photo,
+        };
+        return res.status(200).json({ token, user: userChecked });
     }
     catch (error) {
-        return next(new Error('Error during login process'));
+        console.error('Error during login process:', error);
+        return res.status(500).json({ error: 'Internal server error' });
     }
 }));
