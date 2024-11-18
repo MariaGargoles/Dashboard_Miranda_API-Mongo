@@ -7,7 +7,6 @@ provider:
   environment:
     TOKEN_SECRET: ${env:TOKEN_SECRET}
     MONGODB_URI: ${env:MONGODB_URI}
-    DOMAIN_FRONT: ${env:DOMAIN_FRONT}
 
 functions:
   app:
@@ -61,14 +60,9 @@ functions:
               - Content-Type
               - Authorization
             allowCredentials: true
-
 package:
   patterns:
     - "!./**"
     - "package.json"
     - "node_modules/**"
     - "dist/**"
-
-plugins:
-  - serverless-offline
-  - serverless-dotenv-plugin
