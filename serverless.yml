@@ -7,6 +7,7 @@ provider:
   environment:
     TOKEN_SECRET: ${env:TOKEN_SECRET}
     MONGODB_URI: ${env:MONGODB_URI}
+    DOMAIN_FRONT: ${env:DOMAIN_FRONT}
 
 functions:
   app:
@@ -15,11 +16,51 @@ functions:
       - http:
           path: /
           method: ANY
-          cors: true
+          cors:
+            origins:
+              - ${env:DOMAIN_FRONT} 
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
       - http:
           path: /{proxy+}
           method: ANY
-          cors: true
+          cors:
+            origins:
+              - ${env:DOMAIN_FRONT}
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
+
+  login:
+    handler: dist/controllers/auth.loginController
+    events:
+      - http:
+          path: /login
+          method: POST
+          cors:
+            origins:
+              - ${env:DOMAIN_FRONT}
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
+
+  optionsLogin:
+    handler: dist/controllers/auth.optionsHandler
+    events:
+      - http:
+          path: /login
+          method: OPTIONS
+          cors:
+            origins:
+              - ${env:DOMAIN_FRONT}
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
 
 package:
   patterns:
@@ -27,3 +68,7 @@ package:
     - "package.json"
     - "node_modules/**"
     - "dist/**"
+
+plugins:
+  - serverless-offline
+  - serverless-dotenv-plugin
