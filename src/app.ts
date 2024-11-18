@@ -40,12 +40,15 @@ app.use(cors({
 
 
 //manejar las peticiones 
-app.use((req: Request, res: Response, next: NextFunction) => {
+app.use((req: Request, res: Response, next: NextFunction): void => {
     if (req.method === 'OPTIONS') {
+        res.header('Access-Control-Allow-Origin', 'http://dashboard-miranda-mgl.s3-website.eu-west-3.amazonaws.com');
+        res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         res.sendStatus(204); 
-    } else {
-        next();
+        return; 
     }
+    next(); 
 });
 
 
