@@ -18,8 +18,7 @@
               "runtime": "nodejs20.x",
               "environment": {
                 "TOKEN_SECRET": "<REDACTED>",
-                "MONGODB_URI": "mongodb+srv://segwanda12:miranda@miranda.jwtaj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-                "DOMAIN_FRONT": "http://dashboard-miranda-mgl.s3-website.eu-west-3.amazonaws.com/"
+                "MONGODB_URI": "mongodb+srv://segwanda12:miranda@miranda.jwtaj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
               }
             },
             "functions": {
@@ -30,74 +29,14 @@
                     "http": {
                       "path": "/",
                       "method": "ANY",
-                      "cors": {
-                        "origins": [
-                          "http://dashboard-miranda-mgl.s3-website.eu-west-3.amazonaws.com/"
-                        ],
-                        "headers": [
-                          "Content-Type",
-                          "Authorization"
-                        ],
-                        "allowCredentials": "<REDACTED>"
-                      }
+                      "cors": true
                     }
                   },
                   {
                     "http": {
                       "path": "/{proxy+}",
                       "method": "ANY",
-                      "cors": {
-                        "origins": [
-                          "http://dashboard-miranda-mgl.s3-website.eu-west-3.amazonaws.com/"
-                        ],
-                        "headers": [
-                          "Content-Type",
-                          "Authorization"
-                        ],
-                        "allowCredentials": "<REDACTED>"
-                      }
-                    }
-                  }
-                ]
-              },
-              "login": {
-                "handler": "dist/controllers/auth.loginController",
-                "events": [
-                  {
-                    "http": {
-                      "path": "/login",
-                      "method": "POST",
-                      "cors": {
-                        "origins": [
-                          "http://dashboard-miranda-mgl.s3-website.eu-west-3.amazonaws.com/"
-                        ],
-                        "headers": [
-                          "Content-Type",
-                          "Authorization"
-                        ],
-                        "allowCredentials": "<REDACTED>"
-                      }
-                    }
-                  }
-                ]
-              },
-              "optionsLogin": {
-                "handler": "dist/controllers/auth.optionsHandler",
-                "events": [
-                  {
-                    "http": {
-                      "path": "/login",
-                      "method": "OPTIONS",
-                      "cors": {
-                        "origins": [
-                          "http://dashboard-miranda-mgl.s3-website.eu-west-3.amazonaws.com/"
-                        ],
-                        "headers": [
-                          "Content-Type",
-                          "Authorization"
-                        ],
-                        "allowCredentials": "<REDACTED>"
-                      }
+                      "cors": true
                     }
                   }
                 ]
@@ -110,11 +49,7 @@
                 "node_modules/**",
                 "dist/**"
               ]
-            },
-            "plugins": [
-              "serverless-offline",
-              "serverless-dotenv-plugin"
-            ]
+            }
           },
           "configFileDirPath": "C:\\htdocs\\DashBoard_Miranda_API",
           "config": {
@@ -144,8 +79,7 @@
         "runtime": "nodejs20.x",
         "environment": {
           "TOKEN_SECRET": "<REDACTED>",
-          "MONGODB_URI": "mongodb+srv://segwanda12:miranda@miranda.jwtaj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-          "DOMAIN_FRONT": "http://dashboard-miranda-mgl.s3-website.eu-west-3.amazonaws.com/"
+          "MONGODB_URI": "mongodb+srv://segwanda12:miranda@miranda.jwtaj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
         }
       },
       "functions": {
@@ -156,74 +90,14 @@
               "http": {
                 "path": "/",
                 "method": "ANY",
-                "cors": {
-                  "origins": [
-                    "http://dashboard-miranda-mgl.s3-website.eu-west-3.amazonaws.com/"
-                  ],
-                  "headers": [
-                    "Content-Type",
-                    "Authorization"
-                  ],
-                  "allowCredentials": "<REDACTED>"
-                }
+                "cors": true
               }
             },
             {
               "http": {
                 "path": "/{proxy+}",
                 "method": "ANY",
-                "cors": {
-                  "origins": [
-                    "http://dashboard-miranda-mgl.s3-website.eu-west-3.amazonaws.com/"
-                  ],
-                  "headers": [
-                    "Content-Type",
-                    "Authorization"
-                  ],
-                  "allowCredentials": "<REDACTED>"
-                }
-              }
-            }
-          ]
-        },
-        "login": {
-          "handler": "dist/controllers/auth.loginController",
-          "events": [
-            {
-              "http": {
-                "path": "/login",
-                "method": "POST",
-                "cors": {
-                  "origins": [
-                    "http://dashboard-miranda-mgl.s3-website.eu-west-3.amazonaws.com/"
-                  ],
-                  "headers": [
-                    "Content-Type",
-                    "Authorization"
-                  ],
-                  "allowCredentials": "<REDACTED>"
-                }
-              }
-            }
-          ]
-        },
-        "optionsLogin": {
-          "handler": "dist/controllers/auth.optionsHandler",
-          "events": [
-            {
-              "http": {
-                "path": "/login",
-                "method": "OPTIONS",
-                "cors": {
-                  "origins": [
-                    "http://dashboard-miranda-mgl.s3-website.eu-west-3.amazonaws.com/"
-                  ],
-                  "headers": [
-                    "Content-Type",
-                    "Authorization"
-                  ],
-                  "allowCredentials": "<REDACTED>"
-                }
+                "cors": true
               }
             }
           ]
@@ -236,15 +110,11 @@
           "node_modules/**",
           "dist/**"
         ]
-      },
-      "plugins": [
-        "serverless-offline",
-        "serverless-dotenv-plugin"
-      ]
+      }
     },
-    "serviceRawFile": "service: miranda-backend\r\n\r\nprovider:\r\n  name: aws\r\n  region: eu-west-3\r\n  runtime: nodejs20.x\r\n  environment:\r\n    TOKEN_SECRET: ${env:TOKEN_SECRET}\r\n    MONGODB_URI: ${env:MONGODB_URI}\r\n    DOMAIN_FRONT: ${env:DOMAIN_FRONT}\r\n\r\nfunctions:\r\n  app:\r\n    handler: dist/lambda.handler\r\n    events:\r\n      - http:\r\n          path: /\r\n          method: ANY\r\n          cors:\r\n            origins:\r\n              - ${env:DOMAIN_FRONT} \r\n            headers:\r\n              - Content-Type\r\n              - Authorization\r\n            allowCredentials: true\r\n      - http:\r\n          path: /{proxy+}\r\n          method: ANY\r\n          cors:\r\n            origins:\r\n              - ${env:DOMAIN_FRONT}\r\n            headers:\r\n              - Content-Type\r\n              - Authorization\r\n            allowCredentials: true\r\n\r\n  login:\r\n    handler: dist/controllers/auth.loginController\r\n    events:\r\n      - http:\r\n          path: /login\r\n          method: POST\r\n          cors:\r\n            origins:\r\n              - ${env:DOMAIN_FRONT}\r\n            headers:\r\n              - Content-Type\r\n              - Authorization\r\n            allowCredentials: true\r\n\r\n  optionsLogin:\r\n    handler: dist/controllers/auth.optionsHandler\r\n    events:\r\n      - http:\r\n          path: /login\r\n          method: OPTIONS\r\n          cors:\r\n            origins:\r\n              - ${env:DOMAIN_FRONT}\r\n            headers:\r\n              - Content-Type\r\n              - Authorization\r\n            allowCredentials: true\r\n\r\npackage:\r\n  patterns:\r\n    - \"!./**\"\r\n    - \"package.json\"\r\n    - \"node_modules/**\"\r\n    - \"dist/**\"\r\n\r\nplugins:\r\n  - serverless-offline\r\n  - serverless-dotenv-plugin\r\n",
+    "serviceRawFile": "service: miranda-backend\r\n\r\nprovider:\r\n  name: aws\r\n  region: eu-west-3\r\n  runtime: nodejs20.x\r\n  environment:\r\n    TOKEN_SECRET: ${env:TOKEN_SECRET}\r\n    MONGODB_URI: ${env:MONGODB_URI}\r\n\r\nfunctions:\r\n  app:\r\n    handler: dist/lambda.handler\r\n    events:\r\n      - http:\r\n          path: /\r\n          method: ANY\r\n          cors: true\r\n      - http:\r\n          path: /{proxy+}\r\n          method: ANY\r\n          cors: true\r\n\r\npackage:\r\n  patterns:\r\n    - \"!./**\"\r\n    - \"package.json\"\r\n    - \"node_modules/**\"\r\n    - \"dist/**\"\r\n",
     "command": [
-      "print"
+      "deploy"
     ],
     "options": {},
     "error": {
@@ -271,6 +141,24 @@
     "userName": "mirandabackend",
     "subscription": null,
     "userEmail": "mariagargoles@live.com",
+    "serviceProviderAwsCfStackId": null,
+    "serviceProviderAwsCfStackCreated": null,
+    "serviceProviderAwsCfStackUpdated": null,
+    "serviceProviderAwsCfStackStatus": null,
+    "serviceProviderAwsCfStackOutputs": null
+  },
+  "unknown": {
+    "versionSfCore": null,
+    "versionFramework": "4.4.10",
+    "isWithinCompose": false,
+    "composeOrgName": null,
+    "composeServiceName": null,
+    "command": [],
+    "options": {
+      "version": true
+    },
+    "error": null,
+    "machineId": "28b826c76e2a64d3b5864e5855fcb540",
     "serviceProviderAwsCfStackId": null,
     "serviceProviderAwsCfStackCreated": null,
     "serviceProviderAwsCfStackUpdated": null,
