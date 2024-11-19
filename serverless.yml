@@ -20,7 +20,20 @@ functions:
       - http:
           path: /{proxy+}
           method: ANY
-          cors: true
+          cors: trueç
+login:
+  handler: dist/lambda.handler 
+  events:
+    - http:
+        path: /login
+        method: POST
+        cors:
+          origins:
+            - http://dashboard-miranda-mgl.s3-website.eu-west-3.amazonaws.com
+          headers:
+            - Content-Type
+            - Authorization
+          allowCredentials: true
 
 package:
   patterns:
